@@ -73,19 +73,7 @@ namespace larlite {
 
     float _WFint, _WFintU, _WFintV, _WFintY;
 
-    float stdTDC, UstdTDC, VstdTDC, YstdTDC;
-
-    double MampADC, UMampADC, VMampADC, YMampADC, SDampADC, USDampADC, VSDampADC, YSDampADC; 
-
-    int iqrTDC, UiqrTDC, ViqrTDC, YiqrTDC;
-
-    int _isHit, uHit ,vHit, yHit;
-
-    double intADC,UintADC,VintADC,YintADC;
-
-    std::vector<int> TDCvec, UTDCvec, VTDCvec, YTDCvec;
-
-    std::vector<double> ADCvec, UADCvec, VADCvec, YADCvec; 
+    std::vector<float> TDCvec, UTDCvec, VTDCvec, YTDCvec;
 
     float _Energy;
 

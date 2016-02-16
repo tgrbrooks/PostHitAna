@@ -3,6 +3,33 @@
 
 #include "ShowerAna.h"
 
+float TDCstd(std::vector<float> const & TDCvec) {
+
+    float stdTDC(0);
+    float meanTDC(0);
+
+    for(size_t f=0; f<TDCvec.size(); ++f) {
+        meanTDC += (TDCvec[f]);
+    }
+    meanTDC /= ((float)TDCvec.size());
+
+    for(size_t k=0; k<TDCvec.size(); ++k)
+      stdTDC += (TDCvec[k]-meanTDC)*(TDCvec[k]-meanTDC);
+    stdTDC = sqrt( stdTDC / ((float)TDCvec.size()));
+    return stdTDC;
+
+}
+
+int TDCiqr(std::vector<float> TDCvec, int hitNo) {
+
+    std::sort(TDCvec.begin(),TDCvec.end());
+    int quart =(int) hitNo/4;
+    int iqrTDC = (TDCvec[3*quart] - TDCvec[quart]);
+    return iqrTDC;
+
+}
+
+
 namespace larlite {
   
   // Called at beginning of event loop
@@ -83,16 +110,16 @@ namespace larlite {
     }
 
     // Initialise hit counters for event
-    _isHit = 0;
-    uHit = 0;
-    vHit = 0;
-    yHit = 0;
+    _hitNo = 0;
+    _hitNoU = 0;
+    _hitNoV = 0;
+    _hitNoY = 0;
 
     // Initialize integration counter for event
-    intADC = 0;
-    UintADC = 0;
-    VintADC = 0;
-    YintADC = 0;
+    _WFint = 0;
+    _WFintU = 0;
+    _WFintV = 0;
+    _WFintY = 0;
 
     // Clear TDC vectors
     TDCvec.clear();
@@ -100,27 +127,71 @@ namespace larlite {
     VTDCvec.clear();
     YTDCvec.clear();
 
+    _TDCstd = 0;
+    _TDCstdU = 0;
+    _TDCstdV = 0;
+    _TDCstdY = 0;
+
+    _TDCiqr = 0;
+    _TDCiqrU = 0;
+    _TDCiqrV = 0;
+    _TDCiqrY = 0;
+
     // Clear ADC vectors
-    ADCvec.clear();
-    UADCvec.clear();
-    VADCvec.clear();
-    YADCvec.clear();
+    _ADCamp = 0;
+    _ADCampU = 0;
+    _ADCampV = 0;
+    _ADCampY = 0;
 
     // Get channel ID
     for (size_t i=0; i < hitdata->size(); ++i){
       auto const& hit = (*hitdata).at(i);
       int chnum = hit.Channel();
-      _isHit += 1;
-      if(chnum<2400) uHit += 1;
-      if(chnum>=2400&&chnum<4800) vHit += 1;
-      if(chnum>=4800&&chnum<8256) yHit += 1;
+      _hitNo += 1;
+      _ADCamp += hit.PeakAmplitude();
+      _WFint += hit.Integral();
+      TDCvec.push_back(hit.PeakTime());
+      if(chnum<2400){ 
+        _hitNoU += 1;
+        _ADCampU += hit.PeakAmplitude();
+        _WFintU += hit.Integral();
+        UTDCvec.push_back(hit.PeakTime());
+      }
+      if(chnum>=2400&&chnum<4800){
+        _hitNoV += 1;
+        _ADCampV += hit.PeakAmplitude();
+        _WFintV += hit.Integral();
+        VTDCvec.push_back(hit.PeakTime());
+      }
+      if(chnum>=4800&&chnum<8256){
+        _hitNoY += 1;
+        _ADCampY += hit.PeakAmplitude();
+        _WFintY += hit.Integral();
+        YTDCvec.push_back(hit.PeakTime());
+      }
     }
-    // Count up total number of hits per event
-    // Add total number of hits per event to ttree
-    _hitNo = _isHit;
-    _hitNoU = uHit;
-    _hitNoV = vHit;
-    _hitNoY = yHit;
+
+    _ADCamp = _ADCamp/_hitNo;
+    _ADCampU = _ADCampU/_hitNoU;
+    _ADCampV = _ADCampV/_hitNoV;
+    _ADCampY = _ADCampY/_hitNoY;
+
+    if(_hitNo!=0){
+      _TDCstd = TDCstd(TDCvec);
+      _TDCiqr = TDCiqr(TDCvec,_hitNo);
+    }
+    if(_hitNoU!=0){
+      _TDCstdU = TDCstd(UTDCvec);
+      _TDCiqrU = TDCiqr(UTDCvec,_hitNoU);
+    }
+    if(_hitNoV!=0){
+      _TDCstdV = TDCstd(VTDCvec);
+      _TDCiqrV = TDCiqr(VTDCvec,_hitNoV);
+    }
+    if(_hitNoY!=0){
+      _TDCstdY = TDCstd(YTDCvec);
+      _TDCiqrY = TDCiqr(YTDCvec,_hitNoY);
+    }
 
     _t_ch->Fill();
 
