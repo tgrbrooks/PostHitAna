@@ -20,7 +20,7 @@
 #include <vector>
 #include <cmath>
 #include "DataFormat/hit.h"
-#include "DataFormat/mctruth.h"
+#include "DataFormat/mcshower.h"
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -61,10 +61,33 @@ namespace larlite {
 
     int _evtN;
 
-    int _hitNo;
+    int _showerNo;
 
-    // Numbers of hits
-    int _isHit;   
+    int _hitNo, _hitNoU, _hitNoV, _hitNoY;
+
+    float _TDCstd, _TDCstdU, _TDCstdV, _TDCstdY;
+
+    float _TDCiqr, _TDCiqrU, _TDCiqrV, _TDCiqrY;
+
+    float _ADCamp, _ADCampU, _ADCampV, _ADCampY;
+
+    float _WFint, _WFintU, _WFintV, _WFintY;
+
+    float stdTDC, UstdTDC, VstdTDC, YstdTDC;
+
+    double MampADC, UMampADC, VMampADC, YMampADC, SDampADC, USDampADC, VSDampADC, YSDampADC; 
+
+    int iqrTDC, UiqrTDC, ViqrTDC, YiqrTDC;
+
+    int _isHit, uHit ,vHit, yHit;
+
+    double intADC,UintADC,VintADC,YintADC;
+
+    std::vector<int> TDCvec, UTDCvec, VTDCvec, YTDCvec;
+
+    std::vector<double> ADCvec, UADCvec, VADCvec, YADCvec; 
+
+    float _Energy;
 
     TTree* _t_ch;
     

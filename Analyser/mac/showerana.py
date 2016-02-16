@@ -14,8 +14,9 @@ from ROOT import larlite as fmwk
 # Create ana_processor instance
 my_proc = fmwk.ana_processor()
 
-# Set input root file
-my_proc.add_input_file(sys.argv[1])
+# Set input root files
+for x in xrange(len(sys.argv)-1):
+	my_proc.add_input_file(sys.argv[x+1])
 
 # Specify IO mode
 my_proc.set_io_mode(fmwk.storage_manager.kREAD)
