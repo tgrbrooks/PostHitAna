@@ -16,6 +16,16 @@
 #define LARLITE_SHOWERANA_H
 
 #include "Analysis/ana_base.h"
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include "DataFormat/hit.h"
+#include "DataFormat/mctruth.h"
+#include <TROOT.h>
+#include <TChain.h>
+#include <TFile.h>
+#include <string>
+#include <fstream>
 
 namespace larlite {
   /**
@@ -48,6 +58,15 @@ namespace larlite {
     virtual bool finalize();
 
   protected:
+
+    int _evtN;
+
+    int _hitNo;
+
+    // Numbers of hits
+    int _isHit;   
+
+    TTree* _t_ch;
     
   };
 }

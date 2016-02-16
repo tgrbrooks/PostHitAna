@@ -1,4 +1,4 @@
-import sys
+import sys,os
 
 if len(sys.argv) < 2:
     msg  = '\n'
@@ -7,33 +7,35 @@ if len(sys.argv) < 2:
     sys.stderr.write(msg)
     sys.exit(1)
 
-from larlite import larlite as fmwk
+from ROOT import gSystem
+
+from ROOT import larlite as fmwk
 
 # Create ana_processor instance
 my_proc = fmwk.ana_processor()
 
 # Set input root file
-for x in xrange(len(sys.argv)-1):
-    my_proc.add_input_file(sys.argv[x+1])
+my_proc.add_input_file(sys.argv[1])
 
 # Specify IO mode
 my_proc.set_io_mode(fmwk.storage_manager.kREAD)
 
 # Specify output root file name
-my_proc.set_ana_output_file("from_test_ana_you_can_remove_me.root");
+my_proc.set_ana_output_file("ShowerAna_output.root");
 
-# Attach an analysis unit ... here we use a base class which does nothing.
-# Replace with your analysis unit if you wish.
-my_proc.add_process(fmwk.ana_base())
+# Set c++ script as analysis unit
+ana_unit = fmwk.ShowerAna()
+
+# Add analysis unit to ana_processor instance
+my_proc.add_process(ana_unit)
 
 print
 print  "Finished configuring ana_processor. Start event loop!"
 print
 
-# Let's run it.
+# Run it.
 my_proc.run();
 
-# done!
 print
 print "Finished running ana_processor event loop!"
 print
