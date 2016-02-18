@@ -18,12 +18,14 @@
 #include "Analysis/ana_base.h"
 #include <iostream>
 #include <vector>
+#include <utility>
 #include <cmath>
 #include "DataFormat/hit.h"
 #include "DataFormat/mcshower.h"
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TH1.h>
 #include <string>
 #include <fstream>
 
@@ -74,10 +76,18 @@ namespace larlite {
     float _WFint, _WFintU, _WFintV, _WFintY;
 
     std::vector<float> TDCvec, UTDCvec, VTDCvec, YTDCvec;
+   
+    std::vector<float> ADCvec, UADCvec, VADCvec, YADCvec;
+
+    std::vector<std::pair<float,float>> ShowerStartEnd;
 
     float _Energy;
 
+    std::vector<float> Evec;
+
     TTree* _t_ch;
+
+    TH1F  *h_AvT;
     
   };
 }

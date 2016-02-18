@@ -3,6 +3,7 @@
 
 #include "ShowerAna.h"
 
+// Function to calculate standard deviation from vector of TDC times
 float TDCstd(std::vector<float> const & TDCvec) {
 
     float stdTDC(0);
@@ -20,6 +21,7 @@ float TDCstd(std::vector<float> const & TDCvec) {
 
 }
 
+// Function to calculate interquartile range from vector of TDC times
 int TDCiqr(std::vector<float> TDCvec, int hitNo) {
 
     std::sort(TDCvec.begin(),TDCvec.end());
@@ -62,7 +64,10 @@ namespace larlite {
     _t_ch->Branch("WFintV",&_WFintV,"WFintV/F");
     _t_ch->Branch("WFintY",&_WFintY,"WFintY/F");
     _t_ch->Branch("showerNo",&_showerNo,"showerNo/i");
-    _t_ch->Branch("energy",&_Energy,"Energy/F");
+    _t_ch->Branch("Evec",&Evec);
+    _t_ch->Branch("TDCvec",&TDCvec);
+    _t_ch->Branch("ADCvec",&ADCvec);
+    _t_ch->Branch("ShowerStartEnd",&ShowerStartEnd);
     _t_ch->SetDirectory(0);
 
     return true;
@@ -78,9 +83,6 @@ namespace larlite {
     // Check if it exists / are there any showers
     if ( (!ev_mcs) || (!ev_mcs->size())){
     	print (msg::kERROR,__FUNCTION__,"MCShower data product not found!");
-        // Probably no point doing any analysis if no showers are present
-        // might want a control
-        //return false;
         // If you still want to do stuff remove line above
     	showerFlag = 0;
     }
@@ -88,13 +90,17 @@ namespace larlite {
     // Re set shower count
     _showerNo = 0;
 
+    ShowerStartEnd.clear();
+    Evec.clear();
+
     if (showerFlag){
       // Loop over number of showers? not sure this is how MCShower works
       for (size_t j=0; j < ev_mcs->size(); ++j){
         auto const& shower = (*ev_mcs).at(j);
         std::cout << j << std::endl;
         // Get energy, not sure if this is right energy
-        _Energy = shower.Start().E();
+        Evec.push_back(shower.Start().E());
+        ShowerStartEnd.push_back(std::make_pair(shower.Start().T(), shower.End().T()));
         // Count number of showers per event
         _showerNo += 1;
       }
@@ -102,7 +108,7 @@ namespace larlite {
 
 
     // Use storage to get larlite::hit object (gaushit, cccluster, pandoraCosmicKHitRemoval)
-    auto hitdata = storage->get_data<event_hit>("gaushit");
+    auto hitdata = storage->get_data<event_hit>("pandoraCosmicKHitRemoval");
     // Display error if hit data not present
     if ( (!hitdata) || (!hitdata->size())){
     	print (msg::kERROR,__FUNCTION__,"Hit data product not found!");
@@ -115,7 +121,7 @@ namespace larlite {
     _hitNoV = 0;
     _hitNoY = 0;
 
-    // Initialize integration counter for event
+    // Initialize integration counters for event
     _WFint = 0;
     _WFintU = 0;
     _WFintV = 0;
@@ -127,72 +133,99 @@ namespace larlite {
     VTDCvec.clear();
     YTDCvec.clear();
 
+    ADCvec.clear();
+    UADCvec.clear();
+    VADCvec.clear();
+    YADCvec.clear();
+
+    // Initialize TDC standard deviation counters
     _TDCstd = 0;
     _TDCstdU = 0;
     _TDCstdV = 0;
     _TDCstdY = 0;
 
+    // Initialize TDC interquartile range counters
     _TDCiqr = 0;
     _TDCiqrU = 0;
     _TDCiqrV = 0;
     _TDCiqrY = 0;
 
-    // Clear ADC vectors
+    // Initialize ADC amplitude counters
     _ADCamp = 0;
     _ADCampU = 0;
     _ADCampV = 0;
     _ADCampY = 0;
 
-    // Get channel ID
+    // Loop over hits in each event
     for (size_t i=0; i < hitdata->size(); ++i){
       auto const& hit = (*hitdata).at(i);
+      // Get the channel number
       int chnum = hit.Channel();
+
+      // Count number of hits
       _hitNo += 1;
+      // Add up the hit amplitudes
       _ADCamp += hit.PeakAmplitude();
+      // Add up the integrated waveforms
       _WFint += hit.Integral();
+      // Record times of each hit
       TDCvec.push_back(hit.PeakTime());
+      ADCvec.push_back(hit.PeakAmplitude());
+
+      // Do same for U plane CHECK THIS
       if(chnum<2400){ 
         _hitNoU += 1;
         _ADCampU += hit.PeakAmplitude();
         _WFintU += hit.Integral();
         UTDCvec.push_back(hit.PeakTime());
       }
+
+      // Do same for V plane CHECK THIS
       if(chnum>=2400&&chnum<4800){
         _hitNoV += 1;
         _ADCampV += hit.PeakAmplitude();
         _WFintV += hit.Integral();
         VTDCvec.push_back(hit.PeakTime());
       }
+
+      // Do same for Y plane CHECK THIS
       if(chnum>=4800&&chnum<8256){
         _hitNoY += 1;
         _ADCampY += hit.PeakAmplitude();
         _WFintY += hit.Integral();
         YTDCvec.push_back(hit.PeakTime());
       }
+
     }
 
+    // Average the ADC amplitudes
     _ADCamp = _ADCamp/_hitNo;
     _ADCampU = _ADCampU/_hitNoU;
     _ADCampV = _ADCampV/_hitNoV;
     _ADCampY = _ADCampY/_hitNoY;
 
+    // Calculate time spread
     if(_hitNo!=0){
       _TDCstd = TDCstd(TDCvec);
       _TDCiqr = TDCiqr(TDCvec,_hitNo);
     }
+    // U plane
     if(_hitNoU!=0){
       _TDCstdU = TDCstd(UTDCvec);
       _TDCiqrU = TDCiqr(UTDCvec,_hitNoU);
     }
+    // V plane
     if(_hitNoV!=0){
       _TDCstdV = TDCstd(VTDCvec);
       _TDCiqrV = TDCiqr(VTDCvec,_hitNoV);
     }
+    // Y plane
     if(_hitNoY!=0){
       _TDCstdY = TDCstd(YTDCvec);
       _TDCiqrY = TDCiqr(YTDCvec,_hitNoY);
     }
 
+    // Fill TTree
     _t_ch->Fill();
 
     _evtN += 1;
@@ -203,7 +236,7 @@ namespace larlite {
   // Called at end of event loop
   bool ShowerAna::finalize() {
 
-    // Save histograms to .root file
+   // Save histograms to .root file
    if(_fout){
      _fout->cd();
      std::cout << "writing ch tree" << std::endl;
