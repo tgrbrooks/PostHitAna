@@ -76,6 +76,8 @@ namespace larlite {
   // Called for every event
   bool ShowerAna::analyze(storage_manager* storage) {
    
+    float DriftVel = 1562.5;
+
     bool showerFlag = 1;
 
     // Get MCShower information
@@ -100,7 +102,17 @@ namespace larlite {
         std::cout << j << std::endl;
         // Get energy, not sure if this is right energy
         Evec.push_back(shower.Start().E());
-        ShowerStartEnd.push_back(std::make_pair(shower.Start().T(), shower.End().T()));
+        float startTime = shower.Start().T();
+        float endTime = shower.End().T();
+        float startX = shower.Start().X()/100;
+        float endX = shower.End().X()/100;
+        if(startX>0&&startX<256&&endX>0&&endX<256){
+          ShowerStartEnd.push_back(std::make_pair(startTime + startX*DriftVel, endTime + endX*DriftVel));
+          std::cout<<"Start T "<<startTime<<" End T "<<endTime<<std::endl;
+          std::cout<<"Start X "<<startX<<" End X "<<endX<<std::endl;
+          std::cout<<"Start "<<startTime + startX*DriftVel<<" End "<<endTime + endX*DriftVel<<std::endl;
+        }
+        else ShowerStartEnd.push_back(std::make_pair(0, 0));
         // Count number of showers per event
         _showerNo += 1;
       }
