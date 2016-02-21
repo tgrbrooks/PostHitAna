@@ -74,13 +74,27 @@ namespace larlite {
 
     float _ADCamp, _ADCampU, _ADCampV, _ADCampY;
 
+    float _Meanamp, _MeanampU, _MeanampV, _MeanampY;
+
     float _WFint, _WFintU, _WFintV, _WFintY;
+
+    float _Meanint, _MeanintU, _MeanintV, _MeanintY;
+
+    float _LowDen, _LowDenU, _LowDenV, _LowDenY;
+
+    float _HiDen, _HiDenU, _HiDenV, _HiDenY;
 
     std::vector<float> TDCvec, UTDCvec, VTDCvec, YTDCvec;
    
     std::vector<float> ADCvec, UADCvec, VADCvec, YADCvec;
 
+    std::vector<float> UChvec, VChvec, YChvec;
+
     std::vector<std::pair<float,float>> ShowerStartEnd;
+
+    std::vector<std::pair<float,float>> StartEnd, StartEndU, StartEndV, StartEndY;
+
+    std::vector<std::pair<float,float>> ChStartEnd, ChStartEndU, ChStartEndV, ChStartEndY;
 
     float _Energy;
 

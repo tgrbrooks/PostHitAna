@@ -73,7 +73,35 @@ namespace larlite {
     _t_ch->Branch("UADCvec",&UADCvec);
     _t_ch->Branch("VADCvec",&VADCvec);
     _t_ch->Branch("YADCvec",&YADCvec);
+    _t_ch->Branch("UChvec",&UChvec);
+    _t_ch->Branch("VChvec",&VChvec);
+    _t_ch->Branch("YChvec",&YChvec);
     _t_ch->Branch("ShowerStartEnd",&ShowerStartEnd);
+/*    _t_ch->Branch("Meanamp",&_Meanamp,"Meanamp/F");
+    _t_ch->Branch("MeanampU",&_MeanampU,"MeanampU/F");
+    _t_ch->Branch("MeanampV",&_MeanampV,"MeanampV/F");
+    _t_ch->Branch("MeanampY",&_MeanampY,"MeanampY/F");
+    _t_ch->Branch("Meanint",&_Meanint,"Meanint/F");
+    _t_ch->Branch("MeanintU",&_MeanintU,"MeanintU/F");
+    _t_ch->Branch("MeanintV",&_MeanintV,"MeanintV/F");
+    _t_ch->Branch("MeanintY",&_MeanintY,"MeanintY/F");
+    _t_ch->Branch("LowDen",&_LowDen,"LowDen/F");
+    _t_ch->Branch("LowDenU",&_LowDenU,"LowDenU/F");
+    _t_ch->Branch("LowDenV",&_LowDenV,"LowDenV/F");
+    _t_ch->Branch("LowDenY",&_LowDenY,"LowDenY/F");
+    _t_ch->Branch("HiDen",&_HiDen,"HiDen/F");
+    _t_ch->Branch("HiDenU",&_HiDenU,"HiDenU/F");
+    _t_ch->Branch("HiDenV",&_HiDenV,"HiDenV/F");
+    _t_ch->Branch("HiDenY",&_HiDenY,"HiDenY/F");
+    _t_ch->Branch("StartEnd",&StartEnd);
+    _t_ch->Branch("StartEndU",&StartEndU);
+    _t_ch->Branch("StartEndV",&StartEndV);
+    _t_ch->Branch("StartEndY",&StartEndY);
+    _t_ch->Branch("ChStartEnd",&ChStartEnd);
+    _t_ch->Branch("ChStartEndU",&ChStartEndU);
+    _t_ch->Branch("ChStartEndV",&ChStartEndV);
+    _t_ch->Branch("ChStartEndY",&ChStartEndY);
+*/
     _t_ch->SetDirectory(0);
 
     return true;
@@ -112,7 +140,7 @@ namespace larlite {
         float endTime = shower.End().T();
         float startX = shower.Start().X()/100;
         float endX = shower.End().X()/100;
-        if(startX>0&&startX<2.5604&&endX>0&&endX<2.5604){
+        if((startX>0&&startX<2.5604)||(endX>0&&endX<2.5604)){
           ShowerStartEnd.push_back(std::make_pair(startTime + (startX/(DriftVel*0.0000005)), endTime + (endX/(DriftVel*0.0000005))));
           std::cout<<"Start T "<<startTime<<" End T "<<endTime<<std::endl;
           std::cout<<"Start X "<<startX<<" End X "<<endX<<std::endl;
@@ -156,6 +184,10 @@ namespace larlite {
     VADCvec.clear();
     YADCvec.clear();
 
+    UChvec.clear();
+    VChvec.clear();
+    YChvec.clear();
+
     // Initialize TDC standard deviation counters
     _TDCstd = 0;
     _TDCstdU = 0;
@@ -197,6 +229,7 @@ namespace larlite {
         _WFintU += hit.Integral();
         UTDCvec.push_back(hit.PeakTime());
         UADCvec.push_back(hit.PeakAmplitude());
+        UChvec.push_back(chnum);
       }
 
       // Do same for V plane CHECK THIS
@@ -206,6 +239,7 @@ namespace larlite {
         _WFintV += hit.Integral();
         VTDCvec.push_back(hit.PeakTime());
         VADCvec.push_back(hit.PeakAmplitude());
+        VChvec.push_back(chnum-2400);
       }
 
       // Do same for Y plane CHECK THIS
@@ -215,6 +249,7 @@ namespace larlite {
         _WFintY += hit.Integral();
         YTDCvec.push_back(hit.PeakTime());
         YADCvec.push_back(hit.PeakAmplitude());
+        YChvec.push_back(chnum-4800);
       }
 
     }
