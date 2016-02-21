@@ -66,7 +66,13 @@ namespace larlite {
     _t_ch->Branch("showerNo",&_showerNo,"showerNo/i");
     _t_ch->Branch("Evec",&Evec);
     _t_ch->Branch("TDCvec",&TDCvec);
+    _t_ch->Branch("UTDCvec",&UTDCvec);
+    _t_ch->Branch("VTDCvec",&VTDCvec);
+    _t_ch->Branch("YTDCvec",&YTDCvec);
     _t_ch->Branch("ADCvec",&ADCvec);
+    _t_ch->Branch("UADCvec",&UADCvec);
+    _t_ch->Branch("VADCvec",&VADCvec);
+    _t_ch->Branch("YADCvec",&YADCvec);
     _t_ch->Branch("ShowerStartEnd",&ShowerStartEnd);
     _t_ch->SetDirectory(0);
 
@@ -76,7 +82,7 @@ namespace larlite {
   // Called for every event
   bool ShowerAna::analyze(storage_manager* storage) {
    
-    float DriftVel = 1562.5;
+    float DriftVel = 1600;
 
     bool showerFlag = 1;
 
@@ -106,8 +112,8 @@ namespace larlite {
         float endTime = shower.End().T();
         float startX = shower.Start().X()/100;
         float endX = shower.End().X()/100;
-        if(startX>0&&startX<256&&endX>0&&endX<256){
-          ShowerStartEnd.push_back(std::make_pair(startTime + startX*DriftVel, endTime + endX*DriftVel));
+        if(startX>0&&startX<2.5604&&endX>0&&endX<2.5604){
+          ShowerStartEnd.push_back(std::make_pair(startTime + (startX/(DriftVel*0.0000005)), endTime + (endX/(DriftVel*0.0000005))));
           std::cout<<"Start T "<<startTime<<" End T "<<endTime<<std::endl;
           std::cout<<"Start X "<<startX<<" End X "<<endX<<std::endl;
           std::cout<<"Start "<<startTime + startX*DriftVel<<" End "<<endTime + endX*DriftVel<<std::endl;
@@ -120,7 +126,7 @@ namespace larlite {
 
 
     // Use storage to get larlite::hit object (gaushit, cccluster, pandoraCosmicKHitRemoval)
-    auto hitdata = storage->get_data<event_hit>("pandoraCosmicKHitRemoval");
+    auto hitdata = storage->get_data<event_hit>("gaushit");
     // Display error if hit data not present
     if ( (!hitdata) || (!hitdata->size())){
     	print (msg::kERROR,__FUNCTION__,"Hit data product not found!");
@@ -190,6 +196,7 @@ namespace larlite {
         _ADCampU += hit.PeakAmplitude();
         _WFintU += hit.Integral();
         UTDCvec.push_back(hit.PeakTime());
+        UADCvec.push_back(hit.PeakAmplitude());
       }
 
       // Do same for V plane CHECK THIS
@@ -198,6 +205,7 @@ namespace larlite {
         _ADCampV += hit.PeakAmplitude();
         _WFintV += hit.Integral();
         VTDCvec.push_back(hit.PeakTime());
+        VADCvec.push_back(hit.PeakAmplitude());
       }
 
       // Do same for Y plane CHECK THIS
@@ -206,6 +214,7 @@ namespace larlite {
         _ADCampY += hit.PeakAmplitude();
         _WFintY += hit.Integral();
         YTDCvec.push_back(hit.PeakTime());
+        YADCvec.push_back(hit.PeakAmplitude());
       }
 
     }

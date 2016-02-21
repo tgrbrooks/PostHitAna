@@ -22,6 +22,7 @@
 #include <cmath>
 #include "DataFormat/hit.h"
 #include "DataFormat/mcshower.h"
+#include "DataFormat/mctrack.h"
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
