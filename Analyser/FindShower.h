@@ -65,6 +65,8 @@ namespace larlite {
     int _evtN;
     std::vector<float> TDCvec;
     std::vector<float> Chvec;
+    // Vector of Tracks
+    std::vector<std::vector<std::pair<float,float>>> Tracks;
     TTree* _t_ch;
     
   };

@@ -13,6 +13,7 @@ namespace larlite {
     _t_ch = new TTree("ch_tree","");
     _t_ch->Branch("TDCvec",&TDCvec);
     _t_ch->Branch("Chvec",&Chvec);
+    _t_ch->Branch("Tracks",&Tracks);
     _t_ch->SetDirectory(0);
 
     return true;
@@ -21,7 +22,7 @@ namespace larlite {
   bool FindShower::analyze(storage_manager* storage) {
   
     // Use storage to get larlite::hit object (gaushit, cccluster, pandoraCosmicKHitRemoval)
-    auto hitdata = storage->get_data<event_hit>("gaushit");
+    auto hitdata = storage->get_data<event_hit>("cccluster");
     if ( (!hitdata) || (!hitdata->size())){
     	print (msg::kERROR,__FUNCTION__,"Hit data product not found!");
     	return false;
@@ -48,12 +49,10 @@ namespace larlite {
     std::vector<bool> isChecked;
     // Vector of temporary tracks
     std::vector<std::pair<float,float>> tempTrack;
-    // Vector of Tracks
-    std::vector<std::vector<std::pair<float,float>>> Tracks;
     // Track finding tolerance for time
-    float T = 5;
+    float T = 10;
     // Track finding tolerance for channel number
-    float C = 5;
+    float C = 10;
     // Track finding tolerance for length of track
     float X = 50;
 
@@ -62,7 +61,7 @@ namespace larlite {
       isChecked.push_back(false);
     }
 
-    for (size_t k=0; k < YHits.size(); ++k){
+    for (size_t k=0; k < YHits.size()-1; ++k){
       // Skip over points that have been checked
       while(isChecked[k]) ++k;
       // Clear the temporary track
@@ -79,7 +78,7 @@ namespace larlite {
       float ntime = YHits[l].first;
       float nchan = YHits[l].second;
       // Loop over points until outside of track finding tolerance
-      while(ntime-time<T){
+      while(ntime-time<T&&l<YHits.size()){
         ntime = YHits[l].first;
         nchan = YHits[l].second;
         // If hit is within tolerances, increase the temporary track, then look around this new hit
@@ -95,6 +94,8 @@ namespace larlite {
     }
 
     _t_ch->Fill();
+
+    Tracks.clear();
 
     _evtN += 1;  
 

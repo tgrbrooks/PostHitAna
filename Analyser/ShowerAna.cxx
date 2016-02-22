@@ -154,7 +154,7 @@ namespace larlite {
 
 
     // Use storage to get larlite::hit object (gaushit, cccluster, pandoraCosmicKHitRemoval)
-    auto hitdata = storage->get_data<event_hit>("gaushit");
+    auto hitdata = storage->get_data<event_hit>("pandoraCosmicKHitRemoval");
     // Display error if hit data not present
     if ( (!hitdata) || (!hitdata->size())){
     	print (msg::kERROR,__FUNCTION__,"Hit data product not found!");
