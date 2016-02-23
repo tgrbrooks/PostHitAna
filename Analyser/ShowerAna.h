@@ -84,25 +84,27 @@ namespace larlite {
 
     float _HiDen, _HiDenU, _HiDenV, _HiDenY;
 
+    float _MeanRMS, _MeanRMSU, _MeanRMSV, _MeanRMSY;
+
+    float _MeanMult, _MeanMultU, _MeanMultV, _MeanMultY;
+
+    float _Wirestd, _WirestdU, _WirestdV, _WirestdY;
+
+    float _Wireiqr, _WireiqrU, _WireiqrV, _WireiqrY;
+
     std::vector<float> TDCvec, UTDCvec, VTDCvec, YTDCvec;
    
     std::vector<float> ADCvec, UADCvec, VADCvec, YADCvec;
 
-    std::vector<float> UChvec, VChvec, YChvec;
+    std::vector<float> Chvec, UChvec, VChvec, YChvec;
 
     std::vector<std::pair<float,float>> ShowerStartEnd;
-
-    std::vector<std::pair<float,float>> StartEnd, StartEndU, StartEndV, StartEndY;
-
-    std::vector<std::pair<float,float>> ChStartEnd, ChStartEndU, ChStartEndV, ChStartEndY;
 
     float _Energy;
 
     std::vector<float> Evec;
 
     TTree* _t_ch;
-
-    TH1F  *h_AvT;
     
   };
 }

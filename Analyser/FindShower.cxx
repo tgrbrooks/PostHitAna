@@ -38,7 +38,7 @@ namespace larlite {
       auto const& hit = (*hitdata).at(i);
       int chnum = hit.Channel();
       if(chnum>=4800){
-        YHits.push_back(std::make_pair(hit.PeakTime(),chnum));
+        YHits.push_back(std::make_pair(hit.PeakTime(),chnum-4800));
       }
     }
 
@@ -50,11 +50,11 @@ namespace larlite {
     // Vector of temporary tracks
     std::vector<std::pair<float,float>> tempTrack;
     // Track finding tolerance for time
-    float T = 10;
+    float T = 5;
     // Track finding tolerance for channel number
-    float C = 10;
+    float C = 5;
     // Track finding tolerance for length of track
-    float X = 50;
+    float X = 10;
 
     // Fill the checking vector
     for (size_t j=0; j < YHits.size(); ++j){
@@ -79,6 +79,7 @@ namespace larlite {
       float nchan = YHits[l].second;
       // Loop over points until outside of track finding tolerance
       while(ntime-time<T&&l<YHits.size()){
+        while(isChecked[l]) ++l;
         ntime = YHits[l].first;
         nchan = YHits[l].second;
         // If hit is within tolerances, increase the temporary track, then look around this new hit
@@ -92,7 +93,36 @@ namespace larlite {
       // If the track length is long enough to be a track then add to vector of tracks
       if(tempTrack.size()>X){Tracks.push_back(tempTrack);}
     }
-
+/*
+float Dt = 0.3;
+    for (size_t k=0; k < YHits.size()-1; ++k){
+      while(isChecked[k]) ++k;
+      tempTrack.clear();
+      float time = YHits[k].first;
+      float chan = YHits[k].second;
+      tempTrack.push_back(std::make_pair(time,chan));
+      isChecked[k] = true;
+      int l = k+1;
+      float ntime = YHits[l].first;
+      float nchan = YHits[l].second;
+      //float V1 = std::sqrt((ntime-time)*(ntime-time)+(nchan-chan)*(nchan-chan));
+      float theta1 = atan((nchan-chan)/(ntime-time));
+      while(ntime-time<T&&l<YHits.size()){
+        while(isChecked[l]) ++l;
+        ntime = YHits[l].first;
+        nchan = YHits[l].second;
+        float theta2 = atan((nchan-chan)/(ntime-time));
+        if(nchan-chan<C&&nchan-chan>-C&&theta2<theta1+Dt&&theta2>theta1-Dt){
+          tempTrack.push_back(std::make_pair(ntime,nchan));
+          time = ntime; chan = nchan;
+          theta1 = theta2;
+          isChecked[l] = true;
+          ++l;
+        } else ++l;
+      }
+      if(tempTrack.size()>X){Tracks.push_back(tempTrack);}
+    }
+*/
     _t_ch->Fill();
 
     Tracks.clear();
