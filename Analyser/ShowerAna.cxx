@@ -274,6 +274,8 @@ namespace larlite {
         _hitNoY += 1;
         _MeanampY += amp;
         _WFintY += wint;
+        _MeanRMSY += rms;
+        _MeanMultY += mult;
         YTDCvec.push_back(tdc);
         YADCvec.push_back(amp);
         YChvec.push_back(chnum);
@@ -332,21 +334,21 @@ namespace larlite {
       _TDCstdU = TDCstd(UTDCvec);
       _TDCiqrU = TDCiqr(UTDCvec,_hitNoU);
       _WirestdU = TDCstd(UChvec);
-      _WireiqrU = TDCiqr(UChvec,_hitNo);
+      _WireiqrU = TDCiqr(UChvec,_hitNoU);
     }
     // V plane
     if(_hitNoV!=0){
       _TDCstdV = TDCstd(VTDCvec);
       _TDCiqrV = TDCiqr(VTDCvec,_hitNoV);
       _WirestdV = TDCstd(VChvec);
-      _WireiqrV = TDCiqr(VChvec,_hitNo);
+      _WireiqrV = TDCiqr(VChvec,_hitNoV);
     }
     // Y plane
     if(_hitNoY!=0){
       _TDCstdY = TDCstd(YTDCvec);
       _TDCiqrY = TDCiqr(YTDCvec,_hitNoY);
       _WirestdY = TDCstd(YChvec);
-      _WireiqrY = TDCiqr(YChvec,_hitNo);
+      _WireiqrY = TDCiqr(YChvec,_hitNoY);
     }
 
     // Fill TTree
