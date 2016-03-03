@@ -19,7 +19,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-#include <cmath>
+//#include <cmath>
 #include "DataFormat/hit.h"
 #include "DataFormat/mcshower.h"
 #include "DataFormat/mctrack.h"
@@ -29,6 +29,7 @@
 #include <TH1.h>
 #include <string>
 #include <fstream>
+#include <math.h>
 
 namespace larlite {
   /**
@@ -91,6 +92,8 @@ namespace larlite {
     float _Wirestd, _WirestdU, _WirestdV, _WirestdY;
 
     float _Wireiqr, _WireiqrU, _WireiqrV, _WireiqrY;
+
+    float _ShowerX, _ShowerY, _ShowerZ, _ShowerTheta, _ShowerPhi;
 
     std::vector<float> TDCvec, UTDCvec, VTDCvec, YTDCvec;
    

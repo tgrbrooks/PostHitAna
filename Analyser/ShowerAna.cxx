@@ -125,6 +125,12 @@ namespace larlite {
     _t_ch->Branch("WireiqrU",&_WireiqrU,"WireiqrU/F");
     _t_ch->Branch("WireiqrV",&_WireiqrV,"WireiqrV/F");
     _t_ch->Branch("WireiqrY",&_WireiqrY,"WireiqrY/F");
+
+    _t_ch->Branch("ShowerX",&_ShowerX,"ShowerX/F");
+    _t_ch->Branch("ShowerY",&_ShowerY,"ShowerY/F");
+    _t_ch->Branch("ShowerZ",&_ShowerZ,"ShowerZ/F");
+    _t_ch->Branch("ShowerTheta",&_ShowerTheta,"ShowerTheta/F");
+    _t_ch->Branch("ShowerPhi",&_ShowerPhi,"ShowerPhi/F");
    
     _t_ch->SetDirectory(0);
 
@@ -149,6 +155,11 @@ namespace larlite {
 
     // Re set shower count
     _showerNo = 0;
+    _ShowerX = 0;
+    _ShowerY = 0;
+    _ShowerZ = 0;
+    _ShowerTheta = 0;
+    _ShowerPhi = 0;
 
     ShowerStartEnd.clear();
     Evec.clear();
@@ -157,10 +168,17 @@ namespace larlite {
       // Loop over number of showers? not sure this is how MCShower works
       for (size_t j=0; j < ev_mcs->size(); ++j){
         auto const& shower = (*ev_mcs).at(j);
-        std::cout << j << std::endl;
         // Get energy, not sure if this is right energy
         Evec.push_back(shower.Start().E());
-        float startX = shower.Start().X()/100;
+        _ShowerX = shower.Start().X();
+        _ShowerY = shower.Start().Y();
+        _ShowerZ = shower.Start().Z();
+        float sX = shower.End().X()-_ShowerX;
+        float sY = shower.End().Y()-_ShowerY;
+        float sZ = shower.End().Z()-_ShowerZ;
+        _ShowerPhi = atan(sY/sX);
+        _ShowerTheta = acos(sZ/sqrt(sX*sX+sY*sY+sZ*sZ));
+        float startX = _ShowerX/100;
         float endX = shower.End().X()/100;
         if((startX>0&&startX<2.5604)&&(endX>0&&endX<2.5604)){
           ShowerStartEnd.push_back(std::make_pair(startX, endX));
@@ -234,8 +252,8 @@ namespace larlite {
       _MeanRMS += rms;
       // Add up the multiplicities
       _MeanMult += mult;
-      if(amp>5 && amp<=35) _LowDen += 1;
-      if(amp>35) _HiDen += 1;
+      if(amp>5 && amp<=30) _LowDen += 1;
+      if(amp>30) _HiDen += 1;
       // Record times, amplitudes and channels of each hit
       TDCvec.push_back(tdc);
       ADCvec.push_back(amp);
@@ -251,8 +269,8 @@ namespace larlite {
         UTDCvec.push_back(tdc);
         UADCvec.push_back(amp);
         UChvec.push_back(chnum);
-        if(amp>5 && amp<=35)_LowDenU += 1;
-        if(amp>35)_HiDenU += 1;
+        if(amp>5 && amp<=30)_LowDenU += 1;
+        if(amp>30)_HiDenU += 1;
       }
 
       // Do same for V plane CHECK THIS
@@ -265,8 +283,8 @@ namespace larlite {
         VTDCvec.push_back(tdc);
         VADCvec.push_back(amp);
         VChvec.push_back(chnum);
-        if(amp>5 && amp<=35)_LowDenV += 1;
-        if(amp>35)_HiDenV += 1;
+        if(amp>5 && amp<=30)_LowDenV += 1;
+        if(amp>30)_HiDenV += 1;
       }
 
       // Do same for Y plane CHECK THIS
@@ -279,21 +297,11 @@ namespace larlite {
         YTDCvec.push_back(tdc);
         YADCvec.push_back(amp);
         YChvec.push_back(chnum);
-        if(amp>5 && amp<=35)_LowDenY += 1;
-        if(amp>35)_HiDenY += 1;
+        if(amp>5 && amp<=30)_LowDenY += 1;
+        if(amp>30)_HiDenY += 1;
       }
 
     }
-
-    _LowDen = _LowDen/_hitNo;
-    _LowDenU = _LowDenU/_hitNoU;
-    _LowDenV = _LowDenV/_hitNoV;
-    _LowDenY = _LowDenY/_hitNoY;
-
-    _HiDen = _HiDen/_hitNo;
-    _HiDenU = _HiDenU/_hitNoU;
-    _HiDenV = _HiDenV/_hitNoV;
-    _HiDenY = _HiDenY/_hitNoY;
 
     _ADCamp = MaxVal(ADCvec);
     _ADCampU = MaxVal(UADCvec);
@@ -352,7 +360,7 @@ namespace larlite {
     }
 
     // Fill TTree
-    _t_ch->Fill();
+    if(_hitNoY!=0) _t_ch->Fill();
 
     _evtN += 1;
   
