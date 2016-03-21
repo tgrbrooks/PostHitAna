@@ -72,6 +72,7 @@ namespace larlite {
 
     smallU_bkg_tree = smallU_tree->CloneTree();
     smallU_bkg_tree->SetDirectory(0);
+    smallU_bkg_tree->SetName("smallU_bkg_tree");
 
     // Initialise TTree with all relevant branches
     smallV_tree = new TTree("smallV_tree","");
@@ -279,7 +280,7 @@ namespace larlite {
 
         // Fill TTree
         if(_hitNoU!=0) smallU_tree->Fill();
-        if(_hitNoU>400/*&&_detShowerNo==0*/) smallU_bkg_tree->Fill();
+        if(_hitNoU>100/*&&_detShowerNo==0*/) smallU_bkg_tree->Fill();
 
         _box += 1;
         lowT += 480; highT += 480;
@@ -299,6 +300,7 @@ namespace larlite {
      _fout->cd();
      std::cout << "writing ch tree" << std::endl;
      smallU_tree->Write();
+     smallU_bkg_tree->Write();
    }
   
     return true;
