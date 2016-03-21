@@ -83,7 +83,9 @@ namespace larlite {
     _t_ch->Branch("WFintY",&_WFintY,"WFintY/F");
 
     _t_ch->Branch("showerNo",&_showerNo,"showerNo/i");
+    _t_ch->Branch("detShowerNo",&_detShowerNo,"detShowerNo/i");
     _t_ch->Branch("Evec",&Evec);
+    _t_ch->Branch("Energy",&_Energy);
     _t_ch->Branch("ShowerStartEnd",&ShowerStartEnd);
 
     _t_ch->Branch("Meanamp",&_Meanamp,"Meanamp/F");
@@ -96,15 +98,15 @@ namespace larlite {
     _t_ch->Branch("MeanintV",&_MeanintV,"MeanintV/F");
     _t_ch->Branch("MeanintY",&_MeanintY,"MeanintY/F");
 
-    _t_ch->Branch("LowDen",&_LowDen,"LowDen/F");
-    _t_ch->Branch("LowDenU",&_LowDenU,"LowDenU/F");
-    _t_ch->Branch("LowDenV",&_LowDenV,"LowDenV/F");
-    _t_ch->Branch("LowDenY",&_LowDenY,"LowDenY/F");
+    _t_ch->Branch("LowDen",&_LowDen,"LowDen/i");
+    _t_ch->Branch("LowDenU",&_LowDenU,"LowDenU/i");
+    _t_ch->Branch("LowDenV",&_LowDenV,"LowDenV/i");
+    _t_ch->Branch("LowDenY",&_LowDenY,"LowDenY/i");
 
-    _t_ch->Branch("HiDen",&_HiDen,"HiDen/F");
-    _t_ch->Branch("HiDenU",&_HiDenU,"HiDenU/F");
-    _t_ch->Branch("HiDenV",&_HiDenV,"HiDenV/F");
-    _t_ch->Branch("HiDenY",&_HiDenY,"HiDenY/F");
+    _t_ch->Branch("HiDen",&_HiDen,"HiDen/i");
+    _t_ch->Branch("HiDenU",&_HiDenU,"HiDenU/i");
+    _t_ch->Branch("HiDenV",&_HiDenV,"HiDenV/i");
+    _t_ch->Branch("HiDenY",&_HiDenY,"HiDenY/i");
 
     _t_ch->Branch("MeanRMS",&_MeanRMS,"MeanRMS/F");
     _t_ch->Branch("MeanRMSU",&_MeanRMSU,"MeanRMSU/F");
@@ -131,7 +133,28 @@ namespace larlite {
     _t_ch->Branch("ShowerZ",&_ShowerZ,"ShowerZ/F");
     _t_ch->Branch("ShowerTheta",&_ShowerTheta,"ShowerTheta/F");
     _t_ch->Branch("ShowerPhi",&_ShowerPhi,"ShowerPhi/F");
-   
+
+    _t_ch->Branch("Type",&_Type,"Type/i");
+    _t_ch->Branch("Length",&_Length,"Length/F");
+    _t_ch->Branch("LengthU",&_LengthU,"LengthU/F");
+    _t_ch->Branch("LengthV",&_LengthV,"LengthV/F");
+    _t_ch->Branch("LengthY",&_LengthY,"LengthY/F");
+    _t_ch->Branch("wLengthU",&_wLengthU,"wLengthU/F");
+    _t_ch->Branch("wLengthV",&_wLengthV,"wLengthV/F");
+    _t_ch->Branch("wLengthY",&_wLengthY,"wLengthY/F");
+/* 
+    _t_ch->Branch("ADCvec",&ADCvec);
+    _t_ch->Branch("UADCvec",&UADCvec);
+    _t_ch->Branch("VADCvec",&VADCvec);
+    _t_ch->Branch("YADCvec",&YADCvec);
+    _t_ch->Branch("TDCvec",&TDCvec);
+    _t_ch->Branch("UTDCvec",&UTDCvec);
+    _t_ch->Branch("VTDCvec",&VTDCvec);
+    _t_ch->Branch("YTDCvec",&YTDCvec);  
+    _t_ch->Branch("UChvec",&UChvec);
+    _t_ch->Branch("VChvec",&VChvec);
+    _t_ch->Branch("YChvec",&YChvec);
+*/
     _t_ch->SetDirectory(0);
 
     return true;
@@ -140,6 +163,36 @@ namespace larlite {
   // Called for every event
   bool ShowerAna::analyze(storage_manager* storage) {
    
+    bool truthflag = true;
+
+    auto ev_mct = storage->get_data<event_mctruth>("generator");
+
+    // Display error if rawdigit data not present
+    if ( (!ev_mct) || (!ev_mct->size())){
+    	print (msg::kERROR,__FUNCTION__,"MCTruth data product not found!");
+    	truthflag = false;
+    }
+    if(truthflag){
+        auto const& mct = (*ev_mct).at(0);
+        // Get neutrino inf
+        auto const& neut = (mct.GetNeutrino());
+        // Get charged current or neutral current
+        int ccnc = neut.CCNC();
+	// Get interaction type
+	int intMode = neut.Mode();
+	// Store neutrino energy
+	_Energy = neut.Nu().Trajectory()[0].E();
+	if(intMode==0&&ccnc==0){_Type = 0;}//CCQE
+	else if(intMode==0&&ccnc==1){_Type = 1;}//NCQE
+	else if(intMode==1&&ccnc==0){_Type = 2;}//CCRE
+	else if(intMode==1&&ccnc==1){_Type = 3;}//NCRE
+	else if(intMode==2&&ccnc==0){_Type = 4;}//CCDIS
+	else if(intMode==2&&ccnc==1){_Type = 5;}//NCDIS
+	else if(intMode==3&&ccnc==0){_Type = 6;}//CCCO
+	else if(intMode==3&&ccnc==1){_Type = 7;}//NCCO
+        else{_Type = 8;}
+    } else _Type = 8;
+
     //float DriftVel = 1600;
 
     bool showerFlag = 1;
@@ -155,6 +208,7 @@ namespace larlite {
 
     // Re set shower count
     _showerNo = 0;
+    _detShowerNo = 0;
     _ShowerX = 0;
     _ShowerY = 0;
     _ShowerZ = 0;
@@ -163,12 +217,14 @@ namespace larlite {
 
     ShowerStartEnd.clear();
     Evec.clear();
+    _Energy = 0;
 
     if (showerFlag){
       // Loop over number of showers? not sure this is how MCShower works
       for (size_t j=0; j < ev_mcs->size(); ++j){
         auto const& shower = (*ev_mcs).at(j);
         // Get energy, not sure if this is right energy
+        _Energy = shower.Start().E();
         Evec.push_back(shower.Start().E());
         _ShowerX = shower.Start().X();
         _ShowerY = shower.Start().Y();
@@ -179,16 +235,20 @@ namespace larlite {
         _ShowerPhi = atan(sY/sX);
         _ShowerTheta = acos(sZ/sqrt(sX*sX+sY*sY+sZ*sZ));
         float startX = _ShowerX/100;
+        float startY = _ShowerY/100;
+        float startZ = _ShowerZ/100;
         float endX = shower.End().X()/100;
         if((startX>0&&startX<2.5604)&&(endX>0&&endX<2.5604)){
           ShowerStartEnd.push_back(std::make_pair(startX, endX));
         }
         else ShowerStartEnd.push_back(std::make_pair(0, 0));
         // Count number of showers per event
+        if((startX>0&&startX<2.5604)&&(startY>-1.2&&startY<1.2)&&(startZ>0&&startZ<10.5)&&_Energy>100){
+          _detShowerNo += 1;
+        }
         _showerNo += 1;
       }
     }
-
 
     // Use storage to get larlite::hit object (gaushit, cccluster, pandoraCosmicKHitRemoval)
     auto hitdata = storage->get_data<event_hit>("gaushit");
@@ -230,6 +290,8 @@ namespace larlite {
     _Wirestd = 0;_WirestdU = 0;_WirestdV = 0;_WirestdY = 0;
     // Initialize Wire interquartile range counter
     _Wireiqr = 0;_WireiqrU = 0;_WireiqrV = 0;_WireiqrY = 0;
+    _Length = 0;_LengthU = 0;_LengthV = 0;_LengthY = 0; 
+    _wLengthU = 0; _wLengthV = 0; _wLengthY = 0;
 
     // Loop over hits in each event
     for (size_t i=0; i < hitdata->size(); ++i){
@@ -241,7 +303,7 @@ namespace larlite {
       float tdc = hit.PeakTime();
       float rms = hit.RMS();
       float mult = hit.Multiplicity();
-
+      if(amp>10){
       // Count number of hits
       _hitNo += 1;
       // Add up the hit amplitudes
@@ -252,8 +314,8 @@ namespace larlite {
       _MeanRMS += rms;
       // Add up the multiplicities
       _MeanMult += mult;
-      if(amp>5 && amp<=30) _LowDen += 1;
-      if(amp>30) _HiDen += 1;
+      if(amp<=20) _LowDen += 1;
+      if(amp>20) _HiDen += 1;
       // Record times, amplitudes and channels of each hit
       TDCvec.push_back(tdc);
       ADCvec.push_back(amp);
@@ -269,8 +331,8 @@ namespace larlite {
         UTDCvec.push_back(tdc);
         UADCvec.push_back(amp);
         UChvec.push_back(chnum);
-        if(amp>5 && amp<=30)_LowDenU += 1;
-        if(amp>30)_HiDenU += 1;
+        if(amp<=20)_LowDenU += 1;
+        if(amp>20)_HiDenU += 1;
       }
 
       // Do same for V plane CHECK THIS
@@ -283,8 +345,8 @@ namespace larlite {
         VTDCvec.push_back(tdc);
         VADCvec.push_back(amp);
         VChvec.push_back(chnum);
-        if(amp>5 && amp<=30)_LowDenV += 1;
-        if(amp>30)_HiDenV += 1;
+        if(amp<=20)_LowDenV += 1;
+        if(amp>20)_HiDenV += 1;
       }
 
       // Do same for Y plane CHECK THIS
@@ -297,10 +359,10 @@ namespace larlite {
         YTDCvec.push_back(tdc);
         YADCvec.push_back(amp);
         YChvec.push_back(chnum);
-        if(amp>5 && amp<=30)_LowDenY += 1;
-        if(amp>30)_HiDenY += 1;
+        if(amp<=20)_LowDenY += 1;
+        if(amp>20)_HiDenY += 1;
       }
-
+      }
     }
 
     _ADCamp = MaxVal(ADCvec);
@@ -359,8 +421,28 @@ namespace larlite {
       _WireiqrY = TDCiqr(YChvec,_hitNoY);
     }
 
+    std::sort(TDCvec.begin(),TDCvec.end());
+    std::sort(UTDCvec.begin(),UTDCvec.end());
+    std::sort(VTDCvec.begin(),VTDCvec.end());
+    std::sort(YTDCvec.begin(),YTDCvec.end());
+
+    _Length = TDCvec[TDCvec.size()-5]-TDCvec[5];
+    _LengthU = UTDCvec[UTDCvec.size()-5]-UTDCvec[5];
+    _LengthV = VTDCvec[VTDCvec.size()-5]-VTDCvec[5];
+    _LengthY = YTDCvec[YTDCvec.size()-5]-YTDCvec[5];
+
+    std::sort(UChvec.begin(),UChvec.end());
+    std::sort(VChvec.begin(),VChvec.end());
+    std::sort(YChvec.begin(),YChvec.end());
+
+    _wLengthU = UChvec[UChvec.size()-5]-UChvec[5];
+    _wLengthV = VChvec[VChvec.size()-5]-VChvec[5];
+    _wLengthY = YChvec[YChvec.size()-5]-YChvec[5];
+
     // Fill TTree
-    if(_hitNoY!=0) _t_ch->Fill();
+    if(_hitNoY==0||_hitNoU==0||_hitNoV==0) return false; 
+
+    _t_ch->Fill();
 
     _evtN += 1;
   

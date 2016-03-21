@@ -23,6 +23,7 @@
 #include "DataFormat/hit.h"
 #include "DataFormat/mcshower.h"
 #include "DataFormat/mctrack.h"
+#include "DataFormat/mctruth.h"
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -65,9 +66,9 @@ namespace larlite {
 
     int _evtN;
 
-    int _showerNo;
+    int _showerNo, _detShowerNo;
 
-    int _hitNo, _hitNoU, _hitNoV, _hitNoY;
+    int _hitNo, _hitNoU, _hitNoV, _hitNoY, _Type;
 
     float _TDCstd, _TDCstdU, _TDCstdV, _TDCstdY;
 
@@ -81,9 +82,9 @@ namespace larlite {
 
     float _Meanint, _MeanintU, _MeanintV, _MeanintY;
 
-    float _LowDen, _LowDenU, _LowDenV, _LowDenY;
+    int _LowDen, _LowDenU, _LowDenV, _LowDenY;
 
-    float _HiDen, _HiDenU, _HiDenV, _HiDenY;
+    int _HiDen, _HiDenU, _HiDenV, _HiDenY;
 
     float _MeanRMS, _MeanRMSU, _MeanRMSV, _MeanRMSY;
 
@@ -94,6 +95,10 @@ namespace larlite {
     float _Wireiqr, _WireiqrU, _WireiqrV, _WireiqrY;
 
     float _ShowerX, _ShowerY, _ShowerZ, _ShowerTheta, _ShowerPhi;
+
+    float _Length, _LengthU, _LengthV, _LengthY;
+
+    float _wLengthU, _wLengthV, _wLengthY;
 
     std::vector<float> TDCvec, UTDCvec, VTDCvec, YTDCvec;
    
