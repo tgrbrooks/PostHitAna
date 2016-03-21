@@ -68,6 +68,7 @@ namespace larlite {
     smallU_tree->Branch("MeanMult",&_MeanMultU,"MeanMult/F");
     smallU_tree->Branch("Wirestd",&_WirestdU,"Wirestd/F");
     smallU_tree->Branch("Wireiqr",&_WireiqrU,"Wireiqr/F");
+    smallU_tree->Branch("detShowerNo",&_detShowerNo,"detShowerNo/i");
     smallU_tree->SetDirectory(0);
 
     // Initialise background TTree for U variables and 960x240 boxes
@@ -123,19 +124,19 @@ namespace larlite {
     smallY_tree = new TTree("smallY_tree","");
     smallY_tree->Branch("evt",&_evtN,"evt/i");
     smallY_tree->Branch("box",&_box,"box/i");
-    smallY_tree->Branch("hitNoY",&_hitNoY,"hitNoY/i");
-    smallY_tree->Branch("TDCstdY",&_TDCstdY,"TDCstdY/F");
-    smallY_tree->Branch("TDCiqrY",&_TDCiqrY,"TDCiqrY/F");
-    smallY_tree->Branch("ADCampY",&_ADCampY,"ADCampY/F");
-    smallY_tree->Branch("WFintY",&_WFintY,"WFintY/F");
-    smallY_tree->Branch("MeanampY",&_MeanampY,"MeanampY/F");
-    smallY_tree->Branch("MeanintY",&_MeanintY,"MeanintY/F");
-    smallY_tree->Branch("LowDenY",&_LowDenY,"LowDenY/i");
-    smallY_tree->Branch("HiDenY",&_HiDenY,"HiDenY/i");
-    smallY_tree->Branch("MeanRMSY",&_MeanRMSY,"MeanRMSY/F");
-    smallY_tree->Branch("MeanMultY",&_MeanMultY,"MeanMultY/F");
-    smallY_tree->Branch("WirestdY",&_WirestdY,"WirestdY/F");
-    smallY_tree->Branch("WireiqrY",&_WireiqrY,"WireiqrY/F");
+    smallY_tree->Branch("hitNo",&_hitNoY,"hitNo/i");
+    smallY_tree->Branch("TDCstd",&_TDCstdY,"TDCstd/F");
+    smallY_tree->Branch("TDCiqr",&_TDCiqrY,"TDCiqr/F");
+    smallY_tree->Branch("ADCamp",&_ADCampY,"ADCamp/F");
+    smallY_tree->Branch("WFint",&_WFintY,"WFint/F");
+    smallY_tree->Branch("Meanamp",&_MeanampY,"Meanamp/F");
+    smallY_tree->Branch("Meanint",&_MeanintY,"Meanint/F");
+    smallY_tree->Branch("LowDen",&_LowDenY,"LowDen/i");
+    smallY_tree->Branch("HiDen",&_HiDenY,"HiDen/i");
+    smallY_tree->Branch("MeanRMS",&_MeanRMSY,"MeanRMS/F");
+    smallY_tree->Branch("MeanMult",&_MeanMultY,"MeanMult/F");
+    smallY_tree->Branch("Wirestd",&_WirestdY,"Wirestd/F");
+    smallY_tree->Branch("Wireiqr",&_WireiqrY,"Wireiqr/F");
     smallY_tree->SetDirectory(0);
 
     // Initialise background TTree for Y variables and 960x346 boxes
@@ -204,6 +205,7 @@ namespace larlite {
 
     // Loop over 19 values for time and channel number (boxes increment by 1/2)
     for(int ch(0); ch<19; ++ch){
+      lowT = 0; highT = 960;
       for(int t(0); t<19; ++t){
 
         // Initialise hit counters for event
@@ -356,12 +358,13 @@ namespace larlite {
       // Increment channel limits by 1/2 side of box
       lowUVch += 120; highUVch += 120; lowYch += 173; highYch += 173;
     }
-
+/*
     // Reset time and channel limits for larger boxes
     lowT=0; highT=1200; lowUVch=0; highUVch=300; lowYch=0; highYch=432;
 
     // Repeat the process for larger boxes
     for(int ch(0); ch<15; ++ch){
+      lowT = 0; highT = 1200;
       for(int t(0); t<15; ++t){
 
         // Initialise hit counters for event
@@ -512,7 +515,7 @@ namespace larlite {
       // Increment channel limits
       lowUVch += 150; highUVch += 150; lowYch += 216; highYch += 216;
     }
-
+*/
     _evtN += 1;
   
     return true;
@@ -526,7 +529,7 @@ namespace larlite {
      std::cout << "writing ch tree" << std::endl;
      smallU_tree->Write();
      smallU_bkg_tree->Write();
-     smallV_tree->Write();
+/*     smallV_tree->Write();
      smallV_bkg_tree->Write();
      smallY_tree->Write();
      smallY_bkg_tree->Write();
@@ -535,7 +538,7 @@ namespace larlite {
      largeV_tree->Write();
      largeV_bkg_tree->Write();
      largeY_tree->Write();
-     largeY_bkg_tree->Write();
+     largeY_bkg_tree->Write();*/
    }
   
     return true;
