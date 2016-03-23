@@ -41,7 +41,7 @@ float bMaxVal(std::vector<float> ADCvec){
         avmax += ADCvec[i];
       }
       return avmax/20;
-    } else return avmax;
+    } else return ADCvec[0];
 
 }
 
