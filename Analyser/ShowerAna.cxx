@@ -131,6 +131,8 @@ namespace larlite {
     _t_ch->Branch("ShowerX",&_ShowerX,"ShowerX/F");
     _t_ch->Branch("ShowerY",&_ShowerY,"ShowerY/F");
     _t_ch->Branch("ShowerZ",&_ShowerZ,"ShowerZ/F");
+    _t_ch->Branch("ShowerST",&_ShowerST,"ShowerST/F");
+    _t_ch->Branch("ShowerET",&_ShowerET,"ShowerET/F");
     _t_ch->Branch("ShowerTheta",&_ShowerTheta,"ShowerTheta/F");
     _t_ch->Branch("ShowerPhi",&_ShowerPhi,"ShowerPhi/F");
 
@@ -162,7 +164,7 @@ namespace larlite {
   
   // Called for every event
   bool ShowerAna::analyze(storage_manager* storage) {
-   
+   /*
     bool truthflag = true;
 
     auto ev_mct = storage->get_data<event_mctruth>("generator");
@@ -192,7 +194,7 @@ namespace larlite {
 	else if(intMode==3&&ccnc==1){_Type = 7;}//NCCO
         else{_Type = 8;}
     } else _Type = 8;
-
+*/
     //float DriftVel = 1600;
 
     bool showerFlag = 1;
@@ -212,6 +214,8 @@ namespace larlite {
     _ShowerX = 0;
     _ShowerY = 0;
     _ShowerZ = 0;
+    _ShowerST = 0;
+    _ShowerET = 0;
     _ShowerTheta = 0;
     _ShowerPhi = 0;
 
@@ -229,6 +233,8 @@ namespace larlite {
         _ShowerX = shower.Start().X();
         _ShowerY = shower.Start().Y();
         _ShowerZ = shower.Start().Z();
+        _ShowerST = shower.Start().T();
+        _ShowerET = shower.End().T();
         float sX = shower.End().X()-_ShowerX;
         float sY = shower.End().Y()-_ShowerY;
         float sZ = shower.End().Z()-_ShowerZ;
@@ -247,9 +253,10 @@ namespace larlite {
           _detShowerNo += 1;
         }
         _showerNo += 1;
+_t_ch->Fill();
       }
     }
-
+/*
     // Use storage to get larlite::hit object (gaushit, cccluster, pandoraCosmicKHitRemoval)
     auto hitdata = storage->get_data<event_hit>("gaushit");
     // Display error if hit data not present
@@ -441,8 +448,8 @@ namespace larlite {
 
     // Fill TTree
     if(_hitNoY==0||_hitNoU==0||_hitNoV==0) return false; 
-
-    _t_ch->Fill();
+*/
+   // _t_ch->Fill();
 
     _evtN += 1;
   

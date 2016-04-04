@@ -94,7 +94,7 @@ namespace larlite {
 
     float _Wireiqr, _WireiqrU, _WireiqrV, _WireiqrY;
 
-    float _ShowerX, _ShowerY, _ShowerZ, _ShowerTheta, _ShowerPhi;
+    float _ShowerX, _ShowerY, _ShowerZ, _ShowerTheta, _ShowerPhi, _ShowerST, _ShowerET;
 
     float _Length, _LengthU, _LengthV, _LengthY;
 
