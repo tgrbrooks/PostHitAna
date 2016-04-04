@@ -13,8 +13,10 @@
 #pragma link C++ class larlite::FindShower+;
 #pragma link C++ class larlite::ROIfinder+;
 #pragma link C++ class larlite::BoxScanner+;
+#pragma link C++ class larlite::ShowerToHit+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
+
 
 
 
