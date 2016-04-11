@@ -299,6 +299,40 @@ namespace larlite {
     _Length = 0;_LengthU = 0;_LengthV = 0;_LengthY = 0; 
     _wLengthU = 0; _wLengthV = 0; _wLengthY = 0;
 
+    // Calculate the center of gravity
+    float ampsumu = 0; float ampsumv = 0; float ampsumy = 0;
+    // Loop over hits in each event
+    for (size_t i=0; i < hitdata->size(); ++i){
+      auto const& hit = (*hitdata).at(i);
+      int chnum = hit.Channel();
+      if(chnum<2400) ampsumu += hit.PeakAmplitude();
+      if(chnum>=2400&&chnum<4800) ampsumv += hit.PeakAmplitude();
+      if(chnum>=4800&&chnum<8256) ampsumy += hit.PeakAmplitude();
+    }
+    float tdcsumu = 0; float tdcsumv = 0; float tdcsumy = 0;
+    float chsumu = 0; float chsumv = 0; float chsumy = 0;
+    // Loop over hits in each event
+    for (size_t i=0; i < hitdata->size(); ++i){
+      auto const& hit = (*hitdata).at(i);
+      // Get the channel number
+      int chnum = hit.Channel();
+      float amp = hit.PeakAmplitude();
+      float tdc = hit.PeakTime();
+      if(chnum<2400) {
+        tdcsumu += tdc*amp/ampsumu;
+        chsumu += chnum*amp/ampsumu;
+      }
+      if(chnum>=2400&&chnum<4800) {
+        tdcsumv += tdc*amp/ampsumv;
+        chsumv += chnum*amp/ampsumv;
+      }
+      if(chnum>=4800&&chnum<8256) {
+        tdcsumy += tdc*amp/ampsumy;
+        chsumy += chnum*amp/ampsumy;
+      }
+    }
+
+
     // Loop over hits in each event
     for (size_t i=0; i < hitdata->size(); ++i){
       auto const& hit = (*hitdata).at(i);
@@ -328,7 +362,7 @@ namespace larlite {
       Chvec.push_back(chnum);
 
       // Do same for U plane CHECK THIS
-      if(chnum<2400){ 
+      if(chnum<2400&&tdc>tdcsumu-480&&tdc<tdcsumu+480&&chnum>chsumu-120&&chnum<chsumu+120){ 
         _hitNoU += 1;
         _MeanampU += amp;
         _WFintU += wint;
@@ -342,7 +376,7 @@ namespace larlite {
       }
 
       // Do same for V plane CHECK THIS
-      if(chnum>=2400&&chnum<4800){
+      if(chnum>=2400&&chnum<4800&&tdc>tdcsumv-480&&tdc<tdcsumv+480&&chnum>chsumv-120&&chnum<chsumv+120){
         _hitNoV += 1;
         _MeanampV += amp;
         _WFintV += wint;
@@ -356,7 +390,7 @@ namespace larlite {
       }
 
       // Do same for Y plane CHECK THIS
-      if(chnum>=4800&&chnum<8256){
+      if(chnum>=4800&&chnum<8256&&tdc>tdcsumy-480&&tdc<tdcsumy+480&&chnum>chsumy-173&&chnum<chsumy+173){
         _hitNoY += 1;
         _MeanampY += amp;
         _WFintY += wint;
