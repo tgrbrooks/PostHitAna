@@ -38,8 +38,7 @@ bool showerFlag = 1;
     Times.clear();
     Channels.clear();
 
-    float min = -3.64761e+06;
-    float range = 7.56772e+06;
+    float conv = 1e-09/0.5e-06;//ns/tick
 
     if (showerFlag){
       for (size_t j=0; j < ev_mcs->size(); ++j){
@@ -51,15 +50,31 @@ bool showerFlag = 1;
         float EndX = shower.End().X();
         float EndY = shower.End().Y();
         float EndZ = shower.End().Z();
-        float ST = shower.Start().T(); //nonsense units (possibly 0.634ns)
+        float ST = shower.Start().T(); //ns
         float ET = shower.End().T();
-        if((StartX>0&&StartX<256.04)&&(StartY>-116.25&&StartY<116.25)&&(StartZ>0&&StartZ<1036.8)&&Energy>100){
-          float sst = (ST - min)*(9600/range);
-          float ssdt = StartX/0.08; //vd*100*0.5e-6
-          float set = (ET - min)*(9600/range);
-          float sedt = EndX/0.08; //vd*100*0.5e-6
-          Times.push_back(std::make_pair(sst+ssdt, set+sedt)); //TDC ticks
-          Channels.push_back(std::make_pair((int)(StartZ*10/3), (int)(EndZ*10/3)));
+        if(((StartX>0&&StartX<256.04)&&(StartY>-116.25&&StartY<116.25)&&(StartZ>0&&StartZ<1036.8)&&Energy>50)||((EndX>0&&EndX<256.04)&&(EndY>-116.25&&EndY<116.25)&&(EndZ>0&&EndZ<1036.8)&&Energy>50)){
+          float sst = (ST*conv)+4800;
+          float ssdt = StartX/(1600*100*0.5e-06); //vd*100*tick WHICH SIDE IS WIRE PLANE
+          float set = (ET*conv)+4800;
+          float sedt = EndX/(1600*100*0.5e-06); //vd*100*tick
+          if(StartZ<EndZ){
+            int StartCh = (int)(StartZ*10/3) - 20;
+            int EndCh = (int)(EndZ*10/3) + 20;
+            Channels.push_back(std::make_pair(StartCh, EndCh));
+          } else {
+            int StartCh = (int)(StartZ*10/3) + 20;
+            int EndCh = (int)(EndZ*10/3) - 20;
+            Channels.push_back(std::make_pair(StartCh, EndCh));
+          }
+          if(sst+ssdt<set+sedt){
+            float StartT = sst + ssdt - 60;
+            float EndT = set + sedt + 60;
+            Times.push_back(std::make_pair(StartT, EndT)); //TDC ticks
+          } else {
+            float StartT = sst + ssdt + 60;
+            float EndT = set + sedt - 60;
+            Times.push_back(std::make_pair(StartT, EndT)); //TDC ticks
+          }
         }
       }
     }
@@ -81,7 +96,7 @@ bool showerFlag = 1;
       int chnum = hit.Channel();
       float tdc = hit.PeakTime();
       float amp = hit.PeakAmplitude();
-      if(amp>10){
+      if(amp>5){
         // Y plane
         if(chnum>=4800&&chnum<8256){
           YTDCvec.push_back(tdc);

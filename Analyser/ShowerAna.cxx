@@ -164,7 +164,7 @@ namespace larlite {
   
   // Called for every event
   bool ShowerAna::analyze(storage_manager* storage) {
-   /*
+   
     bool truthflag = true;
 
     auto ev_mct = storage->get_data<event_mctruth>("generator");
@@ -194,7 +194,7 @@ namespace larlite {
 	else if(intMode==3&&ccnc==1){_Type = 7;}//NCCO
         else{_Type = 8;}
     } else _Type = 8;
-*/
+
     //float DriftVel = 1600;
 
     bool showerFlag = 1;
@@ -253,10 +253,9 @@ namespace larlite {
           _detShowerNo += 1;
         }
         _showerNo += 1;
-_t_ch->Fill();
       }
     }
-/*
+
     // Use storage to get larlite::hit object (gaushit, cccluster, pandoraCosmicKHitRemoval)
     auto hitdata = storage->get_data<event_hit>("gaushit");
     // Display error if hit data not present
@@ -448,8 +447,8 @@ _t_ch->Fill();
 
     // Fill TTree
     if(_hitNoY==0||_hitNoU==0||_hitNoV==0) return false; 
-*/
-   // _t_ch->Fill();
+
+    _t_ch->Fill();
 
     _evtN += 1;
   
