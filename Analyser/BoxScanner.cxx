@@ -201,12 +201,12 @@ namespace larlite {
     }
 
     // Set upper and lower limits on box sizes
-    float lowT=0;float highT=960;int lowUVch=0;int highUVch=240;int lowYch=0;int highYch=345;
+    float lowT=0;float highT=640;int lowUVch=0;int highUVch=160;int lowYch=0;int highYch=230;
 
     // Loop over 19 values for time and channel number (boxes increment by 1/2)
-    for(int ch(0); ch<19; ++ch){
-      lowT = 0; highT = 960;
-      for(int t(0); t<19; ++t){
+    for(int ch(0); ch<29; ++ch){
+      lowT = 0; highT = 640;
+      for(int t(0); t<29; ++t){
 
         // Initialise hit counters for event
         _hitNoU = 0;_hitNoV = 0;_hitNoY = 0;
@@ -298,31 +298,13 @@ namespace larlite {
           }
         }
 
-        // Get "average" maximum ADC amplitude
-        _ADCampU = bMaxVal(UADCvec);
-        _ADCampV = bMaxVal(VADCvec);
-        _ADCampY = bMaxVal(YADCvec);
-
-        // Average the ADC amplitudes
-        _MeanampU = _MeanampU/_hitNoU;
-        _MeanampV = _MeanampV/_hitNoV;
-        _MeanampY = _MeanampY/_hitNoY;
-
-        // Average the integrated waveforms
-        _MeanintU = _WFintU/_hitNoU;
-        _MeanintV = _WFintV/_hitNoV;
-        _MeanintY = _WFintY/_hitNoY;
-
-        _MeanRMSU = _MeanRMSU/_hitNoU;
-        _MeanRMSV = _MeanRMSV/_hitNoV;
-        _MeanRMSY = _MeanRMSY/_hitNoY;
-
-        _MeanMultU = _MeanMultU/_hitNoU;
-        _MeanMultV = _MeanMultV/_hitNoV;
-        _MeanMultY = _MeanMultY/_hitNoY;
-
         // U plane
         if(_hitNoU!=0){
+          _ADCampU = bMaxVal(UADCvec);
+          _MeanampU = _MeanampU/_hitNoU;
+          _MeanintU = _WFintU/_hitNoU;
+          _MeanRMSU = _MeanRMSU/_hitNoU;
+          _MeanMultU = _MeanMultU/_hitNoU;
           _TDCstdU = bTDCstd(UTDCvec);
           _TDCiqrU = bTDCiqr(UTDCvec,_hitNoU);
           _WirestdU = bTDCstd(UChvec);
@@ -330,6 +312,11 @@ namespace larlite {
         }
         // V plane
         if(_hitNoV!=0){
+          _ADCampV = bMaxVal(VADCvec);
+          _MeanampV = _MeanampV/_hitNoV;
+          _MeanintV = _WFintV/_hitNoV;
+          _MeanRMSV = _MeanRMSV/_hitNoV;
+          _MeanMultV = _MeanMultV/_hitNoV;
           _TDCstdV = bTDCstd(VTDCvec);
           _TDCiqrV = bTDCiqr(VTDCvec,_hitNoV);
           _WirestdV = bTDCstd(VChvec);
@@ -337,6 +324,11 @@ namespace larlite {
         }
         // Y plane
         if(_hitNoY!=0){
+          _ADCampY = bMaxVal(YADCvec);
+          _MeanampY = _MeanampY/_hitNoY;
+          _MeanintY = _WFintY/_hitNoY;
+          _MeanRMSY = _MeanRMSY/_hitNoY;
+          _MeanMultY = _MeanMultY/_hitNoY;
           _TDCstdY = bTDCstd(YTDCvec);
           _TDCiqrY = bTDCiqr(YTDCvec,_hitNoY);
           _WirestdY = bTDCstd(YChvec);
@@ -353,19 +345,19 @@ namespace larlite {
 
         _box += 1;
         // Increment time limits by 1/2 side of box
-        lowT += 480; highT += 480;
+        lowT += 320; highT += 320;
       }
       // Increment channel limits by 1/2 side of box
-      lowUVch += 120; highUVch += 120; lowYch += 173; highYch += 173;
+      lowUVch += 80; highUVch += 80; lowYch += 115; highYch += 115;
     }
-/*
+
     // Reset time and channel limits for larger boxes
-    lowT=0; highT=1200; lowUVch=0; highUVch=300; lowYch=0; highYch=432;
+    lowT=0; highT=960; lowUVch=0; highUVch=240; lowYch=0; highYch=346;
 
     // Repeat the process for larger boxes
-    for(int ch(0); ch<15; ++ch){
-      lowT = 0; highT = 1200;
-      for(int t(0); t<15; ++t){
+    for(int ch(0); ch<19; ++ch){
+      lowT = 0; highT = 960;
+      for(int t(0); t<19; ++t){
 
         // Initialise hit counters for event
         _hitNoU = 0;_hitNoV = 0;_hitNoY = 0;
@@ -456,30 +448,13 @@ namespace larlite {
           }
         }
 
-        _ADCampU = bMaxVal(UADCvec);
-        _ADCampV = bMaxVal(VADCvec);
-        _ADCampY = bMaxVal(YADCvec);
-
-        // Average the ADC amplitudes
-        _MeanampU = _MeanampU/_hitNoU;
-        _MeanampV = _MeanampV/_hitNoV;
-        _MeanampY = _MeanampY/_hitNoY;
-
-        // Average the integrated waveforms
-        _MeanintU = _WFintU/_hitNoU;
-        _MeanintV = _WFintV/_hitNoV;
-        _MeanintY = _WFintY/_hitNoY;
-
-        _MeanRMSU = _MeanRMSU/_hitNoU;
-        _MeanRMSV = _MeanRMSV/_hitNoV;
-        _MeanRMSY = _MeanRMSY/_hitNoY;
-
-        _MeanMultU = _MeanMultU/_hitNoU;
-        _MeanMultV = _MeanMultV/_hitNoV;
-        _MeanMultY = _MeanMultY/_hitNoY;
-
         // U plane
         if(_hitNoU!=0){
+          _ADCampU = bMaxVal(UADCvec);
+          _MeanampU = _MeanampU/_hitNoU;
+          _MeanintU = _WFintU/_hitNoU;
+          _MeanRMSU = _MeanRMSU/_hitNoU;
+          _MeanMultU = _MeanMultU/_hitNoU;
           _TDCstdU = bTDCstd(UTDCvec);
           _TDCiqrU = bTDCiqr(UTDCvec,_hitNoU);
           _WirestdU = bTDCstd(UChvec);
@@ -487,6 +462,11 @@ namespace larlite {
         }
         // V plane
         if(_hitNoV!=0){
+          _ADCampV = bMaxVal(VADCvec);
+          _MeanampV = _MeanampV/_hitNoV;
+          _MeanintV = _WFintV/_hitNoV;
+          _MeanRMSV = _MeanRMSV/_hitNoV;
+          _MeanMultV = _MeanMultV/_hitNoV;
           _TDCstdV = bTDCstd(VTDCvec);
           _TDCiqrV = bTDCiqr(VTDCvec,_hitNoV);
           _WirestdV = bTDCstd(VChvec);
@@ -494,6 +474,11 @@ namespace larlite {
         }
         // Y plane
         if(_hitNoY!=0){
+          _ADCampY = bMaxVal(YADCvec);
+          _MeanampY = _MeanampY/_hitNoY;
+          _MeanintY = _WFintY/_hitNoY;
+          _MeanRMSY = _MeanRMSY/_hitNoY;
+          _MeanMultY = _MeanMultY/_hitNoY;
           _TDCstdY = bTDCstd(YTDCvec);
           _TDCiqrY = bTDCiqr(YTDCvec,_hitNoY);
           _WirestdY = bTDCstd(YChvec);
@@ -510,12 +495,12 @@ namespace larlite {
 
         _box += 1;
         // Increment time limits
-        lowT += 600; highT += 600;
+        lowT += 480; highT += 480;
       }
       // Increment channel limits
-      lowUVch += 150; highUVch += 150; lowYch += 216; highYch += 216;
+      lowUVch += 120; highUVch += 120; lowYch += 173; highYch += 173;
     }
-*/
+
     _evtN += 1;
   
     return true;
@@ -527,18 +512,18 @@ namespace larlite {
    if(_fout){
      _fout->cd();
      std::cout << "writing ch tree" << std::endl;
-     smallU_tree->Write();
+     //smallU_tree->Write();
      smallU_bkg_tree->Write();
-/*     smallV_tree->Write();
+     //smallV_tree->Write();
      smallV_bkg_tree->Write();
-     smallY_tree->Write();
+     //smallY_tree->Write();
      smallY_bkg_tree->Write();
-     largeU_tree->Write();
+     //largeU_tree->Write();
      largeU_bkg_tree->Write();
-     largeV_tree->Write();
+     //largeV_tree->Write();
      largeV_bkg_tree->Write();
-     largeY_tree->Write();
-     largeY_bkg_tree->Write();*/
+     //largeY_tree->Write();
+     largeY_bkg_tree->Write();
    }
   
     return true;

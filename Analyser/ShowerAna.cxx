@@ -137,14 +137,14 @@ namespace larlite {
     _t_ch->Branch("ShowerPhi",&_ShowerPhi,"ShowerPhi/F");
 
     _t_ch->Branch("Type",&_Type,"Type/i");
-    _t_ch->Branch("Length",&_Length,"Length/F");
+/*    _t_ch->Branch("Length",&_Length,"Length/F");
     _t_ch->Branch("LengthU",&_LengthU,"LengthU/F");
     _t_ch->Branch("LengthV",&_LengthV,"LengthV/F");
     _t_ch->Branch("LengthY",&_LengthY,"LengthY/F");
     _t_ch->Branch("wLengthU",&_wLengthU,"wLengthU/F");
     _t_ch->Branch("wLengthV",&_wLengthV,"wLengthV/F");
     _t_ch->Branch("wLengthY",&_wLengthY,"wLengthY/F");
-/* 
+ 
     _t_ch->Branch("ADCvec",&ADCvec);
     _t_ch->Branch("UADCvec",&UADCvec);
     _t_ch->Branch("VADCvec",&VADCvec);
@@ -296,9 +296,9 @@ namespace larlite {
     _Wirestd = 0;_WirestdU = 0;_WirestdV = 0;_WirestdY = 0;
     // Initialize Wire interquartile range counter
     _Wireiqr = 0;_WireiqrU = 0;_WireiqrV = 0;_WireiqrY = 0;
-    _Length = 0;_LengthU = 0;_LengthV = 0;_LengthY = 0; 
+/*    _Length = 0;_LengthU = 0;_LengthV = 0;_LengthY = 0; 
     _wLengthU = 0; _wLengthV = 0; _wLengthY = 0;
-
+*/
     // Calculate the center of gravity
     float ampsumu = 0; float ampsumv = 0; float ampsumy = 0;
     // Loop over hits in each event
@@ -332,7 +332,6 @@ namespace larlite {
       }
     }
 
-
     // Loop over hits in each event
     for (size_t i=0; i < hitdata->size(); ++i){
       auto const& hit = (*hitdata).at(i);
@@ -362,7 +361,7 @@ namespace larlite {
       Chvec.push_back(chnum);
 
       // Do same for U plane CHECK THIS
-      if(chnum<2400&&tdc>tdcsumu-480&&tdc<tdcsumu+480&&chnum>chsumu-120&&chnum<chsumu+120){ 
+      if(chnum<2400&&tdc>tdcsumu-320&&tdc<tdcsumu+320&&chnum>chsumu-80&&chnum<chsumu+80){ 
         _hitNoU += 1;
         _MeanampU += amp;
         _WFintU += wint;
@@ -376,7 +375,7 @@ namespace larlite {
       }
 
       // Do same for V plane CHECK THIS
-      if(chnum>=2400&&chnum<4800&&tdc>tdcsumv-480&&tdc<tdcsumv+480&&chnum>chsumv-120&&chnum<chsumv+120){
+      if(chnum>=2400&&chnum<4800&&tdc>tdcsumv-320&&tdc<tdcsumv+320&&chnum>chsumv-80&&chnum<chsumv+80){
         _hitNoV += 1;
         _MeanampV += amp;
         _WFintV += wint;
@@ -390,7 +389,7 @@ namespace larlite {
       }
 
       // Do same for Y plane CHECK THIS
-      if(chnum>=4800&&chnum<8256&&tdc>tdcsumy-480&&tdc<tdcsumy+480&&chnum>chsumy-173&&chnum<chsumy+173){
+      if(chnum>=4800&&chnum<8256&&tdc>tdcsumy-320&&tdc<tdcsumy+320&&chnum>chsumy-115&&chnum<chsumy+115){
         _hitNoY += 1;
         _MeanampY += amp;
         _WFintY += wint;
@@ -460,7 +459,7 @@ namespace larlite {
       _WirestdY = TDCstd(YChvec);
       _WireiqrY = TDCiqr(YChvec,_hitNoY);
     }
-
+/*
     std::sort(TDCvec.begin(),TDCvec.end());
     std::sort(UTDCvec.begin(),UTDCvec.end());
     std::sort(VTDCvec.begin(),VTDCvec.end());
@@ -478,7 +477,7 @@ namespace larlite {
     _wLengthU = UChvec[UChvec.size()-5]-UChvec[5];
     _wLengthV = VChvec[VChvec.size()-5]-VChvec[5];
     _wLengthY = YChvec[YChvec.size()-5]-YChvec[5];
-
+*/
     // Fill TTree
     if(_hitNoY==0||_hitNoU==0||_hitNoV==0) return false; 
 

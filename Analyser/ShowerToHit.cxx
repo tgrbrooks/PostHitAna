@@ -16,6 +16,7 @@ namespace larlite {
     _t_ch->Branch("YChvec",&YChvec);
     _t_ch->Branch("Times",&Times); 
     _t_ch->Branch("Channels",&Channels);
+    _t_ch->Branch("StartX",&_startx);
     _t_ch->SetDirectory(0);
 
 
@@ -37,6 +38,7 @@ bool showerFlag = 1;
 
     Times.clear();
     Channels.clear();
+    _startx.clear();
 
     float conv = 1e-09/0.5e-06;//ns/tick
 
@@ -52,11 +54,12 @@ bool showerFlag = 1;
         float EndZ = shower.End().Z();
         float ST = shower.Start().T(); //ns
         float ET = shower.End().T();
-        if(((StartX>0&&StartX<256.04)&&(StartY>-116.25&&StartY<116.25)&&(StartZ>0&&StartZ<1036.8)&&Energy>50)||((EndX>0&&EndX<256.04)&&(EndY>-116.25&&EndY<116.25)&&(EndZ>0&&EndZ<1036.8)&&Energy>50)){
+        if(((StartX>0&&StartX<256.04)&&(StartY>-116.25&&StartY<116.25)&&(StartZ>0&&StartZ<1036.8)&&Energy>75)||((EndX>0&&EndX<256.04)&&(EndY>-116.25&&EndY<116.25)&&(EndZ>0&&EndZ<1036.8)&&Energy>75)){
           float sst = (ST*conv)+4800;
           float ssdt = StartX/(1600*100*0.5e-06); //vd*100*tick WHICH SIDE IS WIRE PLANE
           float set = (ET*conv)+4800;
           float sedt = EndX/(1600*100*0.5e-06); //vd*100*tick
+          _startx.push_back(StartX);
           if(StartZ<EndZ){
             int StartCh = (int)(StartZ*10/3) - 20;
             int EndCh = (int)(EndZ*10/3) + 20;

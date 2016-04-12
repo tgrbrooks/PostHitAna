@@ -68,6 +68,8 @@ namespace larlite {
 
     std::vector<std::pair<int,int>> Channels;
 
+    std::vector<float> _startx;
+
     TTree* _t_ch;
     
   };
