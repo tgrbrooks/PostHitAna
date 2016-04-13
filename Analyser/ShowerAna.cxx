@@ -127,7 +127,7 @@ namespace larlite {
     _t_ch->Branch("WireiqrU",&_WireiqrU,"WireiqrU/F");
     _t_ch->Branch("WireiqrV",&_WireiqrV,"WireiqrV/F");
     _t_ch->Branch("WireiqrY",&_WireiqrY,"WireiqrY/F");
-
+/*
     _t_ch->Branch("ShowerX",&_ShowerX,"ShowerX/F");
     _t_ch->Branch("ShowerY",&_ShowerY,"ShowerY/F");
     _t_ch->Branch("ShowerZ",&_ShowerZ,"ShowerZ/F");
@@ -137,7 +137,7 @@ namespace larlite {
     _t_ch->Branch("ShowerPhi",&_ShowerPhi,"ShowerPhi/F");
 
     _t_ch->Branch("Type",&_Type,"Type/i");
-/*    _t_ch->Branch("Length",&_Length,"Length/F");
+    _t_ch->Branch("Length",&_Length,"Length/F");
     _t_ch->Branch("LengthU",&_LengthU,"LengthU/F");
     _t_ch->Branch("LengthV",&_LengthV,"LengthV/F");
     _t_ch->Branch("LengthY",&_LengthY,"LengthY/F");
@@ -480,9 +480,9 @@ namespace larlite {
 */
     // Fill TTree
     if(_hitNoY==0||_hitNoU==0||_hitNoV==0) return false; 
-
-    _t_ch->Fill();
-
+///////////////////////////////////////////////////////////////////////////////////////////
+    if(_showerNo==0) _t_ch->Fill();
+////////////////////////////////////////////////////////////////////////////////////////////
     _evtN += 1;
   
     return true;
