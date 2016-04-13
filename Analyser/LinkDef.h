@@ -14,8 +14,10 @@
 #pragma link C++ class larlite::ROIfinder+;
 #pragma link C++ class larlite::BoxScanner+;
 #pragma link C++ class larlite::ShowerToHit+;
+#pragma link C++ class larlite::GenerateSigBkg+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
+
 
 
 
