@@ -58,7 +58,8 @@ bool showerFlag = 1;
           float sst = (ST*conv)+3200;
           float ssdt = StartX/(1600*100*0.5e-06); //vd*100*tick WHICH SIDE IS WIRE PLANE
           float set = (ET*conv)+3200;
-          float sedt = EndX/(1600*100*0.5e-06); //vd*100*tick 
+          float sedt = EndX/(1600*100*0.5e-06); //vd*100*tick
+          if (StartX>250){ 
           _startx.push_back(StartX);
           if(StartZ<EndZ){
             int StartCh = (int)(StartZ*10/3) - 20;
@@ -77,6 +78,7 @@ bool showerFlag = 1;
             float StartT = sst + ssdt + 60;
             float EndT = set + sedt - 60;
             Times.push_back(std::make_pair(StartT, EndT)); //TDC ticks
+          }
           }
         }
       }
