@@ -56,10 +56,9 @@ bool showerFlag = 1;
         float ET = shower.End().T();
         if(((StartX>0&&StartX<256.04)&&(StartY>-116.25&&StartY<116.25)&&(StartZ>0&&StartZ<1036.8)&&Energy>75)||((EndX>0&&EndX<256.04)&&(EndY>-116.25&&EndY<116.25)&&(EndZ>0&&EndZ<1036.8)&&Energy>75)){
           float sst = (ST*conv)+3200;
-          float ssdt = StartX/(1600*100*0.5e-06); //vd*100*tick WHICH SIDE IS WIRE PLANE
+          float ssdt = StartX/(1300*100*0.5e-06); //vd*100*tick WHICH SIDE IS WIRE PLANE
           float set = (ET*conv)+3200;
-          float sedt = EndX/(1600*100*0.5e-06); //vd*100*tick
-          if (StartX>250){ 
+          float sedt = EndX/(1300*100*0.5e-06); //vd*100*tick 
           _startx.push_back(StartX);
           if(StartZ<EndZ){
             int StartCh = (int)(StartZ*10/3) - 20;
@@ -78,7 +77,6 @@ bool showerFlag = 1;
             float StartT = sst + ssdt + 60;
             float EndT = set + sedt - 60;
             Times.push_back(std::make_pair(StartT, EndT)); //TDC ticks
-          }
           }
         }
       }
