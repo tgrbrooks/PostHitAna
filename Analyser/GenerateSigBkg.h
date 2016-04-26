@@ -94,6 +94,8 @@ namespace larlite {
 
     float _WireiqrY;
 
+    int _NumMultY;
+
     std::vector<float> TDCvec, YTDCvec;
    
     std::vector<float> ADCvec, YADCvec;

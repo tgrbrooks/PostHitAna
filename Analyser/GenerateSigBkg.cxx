@@ -65,6 +65,7 @@ namespace larlite {
     sig_tree->Branch("MeanMult",&_MeanMultY,"MeanMult/F");
     sig_tree->Branch("Wirestd",&_WirestdY,"Wirestd/F");
     sig_tree->Branch("Wireiqr",&_WireiqrY,"Wireiqr/F");
+    sig_tree->Branch("NumMult",&_NumMultY,"NumMult/i");
     sig_tree->SetDirectory(0);
 
     // Initialise background TTree for Y variables and 960x346 boxes
@@ -149,6 +150,7 @@ namespace larlite {
     _WirestdY = 0;
     // Initialize Wire interquartile range counter
     _WireiqrY = 0;
+    _NumMultY = 0;
 
     // Loop over hits in each event
     for (size_t i=0; i < hitdata->size(); ++i){
@@ -160,7 +162,7 @@ namespace larlite {
       float tdc = hit.PeakTime();
       float rms = hit.RMS();
       float mult = hit.Multiplicity();
-      if(amp>10){
+      if(amp>10&&tdc>3600&&tdc<9600){
       // Do same for Y plane CHECK THIS
       if(chnum>=4800&&chnum<8256){
         _hitNoY += 1;
@@ -171,8 +173,8 @@ namespace larlite {
         YTDCvec.push_back(tdc);
         YADCvec.push_back(amp);
         YChvec.push_back(chnum);
-        if(amp<=20)_LowDenY += 1;
-        if(amp>20)_HiDenY += 1;
+        if(amp<=26)_LowDenY += 1;
+        if(amp>26)_HiDenY += 1;
       }
       }
     }
@@ -190,8 +192,20 @@ namespace larlite {
       _WireiqrY = gTDCiqr(YChvec,_hitNoY);
     }
 
+    int current_num_hits, next_num_hits;
+
+    for(int k(4800); k<8256; k++){
+      current_num_hits = 0;
+      next_num_hits = 0;
+      for(int l(0); l<YChvec.size(); l++){
+        if(YChvec[l]==k) current_num_hits++;
+        if(YChvec[l]==k+1) next_num_hits++;
+      }
+      if(std::abs(current_num_hits-next_num_hits)>3) _NumMultY++;
+    }
+
     // Fill TTree
-    if(_hitNoY==0) return false; 
+    if(_hitNoY==0||_ADCampY>2000) return false; 
 
     if(_detShowerNo==0) bkg_tree->Fill();
     else sig_tree->Fill();
