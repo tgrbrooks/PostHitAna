@@ -54,20 +54,48 @@ namespace larlite {
     sig_tree->Branch("evt",&_evtN,"evt/i");
     sig_tree->Branch("detShowerNo",&_detShowerNo,"detShowerNo/i");
     sig_tree->Branch("Type",&_Type,"Type/i");
-    sig_tree->Branch("hitNo",&_hitNoY,"hitNo/i");
-    sig_tree->Branch("TDCstd",&_TDCstdY,"TDCstd/F");
-    sig_tree->Branch("TDCiqr",&_TDCiqrY,"TDCiqr/F");
-    sig_tree->Branch("ADCamp",&_ADCampY,"ADCamp/F");
-    sig_tree->Branch("WFint",&_WFintY,"WFint/F");
-    sig_tree->Branch("Meanamp",&_MeanampY,"Meanamp/F");
-    sig_tree->Branch("Meanint",&_MeanintY,"Meanint/F");
-    sig_tree->Branch("LowDen",&_LowDenY,"LowDen/i");
-    sig_tree->Branch("HiDen",&_HiDenY,"HiDen/i");
-    sig_tree->Branch("MeanRMS",&_MeanRMSY,"MeanRMS/F");
-    sig_tree->Branch("MeanMult",&_MeanMultY,"MeanMult/F");
-    sig_tree->Branch("Wirestd",&_WirestdY,"Wirestd/F");
-    sig_tree->Branch("Wireiqr",&_WireiqrY,"Wireiqr/F");
-    sig_tree->Branch("NumMult",&_NumMultY,"NumMult/i");
+    sig_tree->Branch("hitNoU",&_hitNoU,"hitNoU/i");
+    sig_tree->Branch("hitNoV",&_hitNoV,"hitNoV/i");
+    sig_tree->Branch("hitNoY",&_hitNoY,"hitNoY/i");
+    sig_tree->Branch("TDCstdU",&_TDCstdU,"TDCstdU/F");
+    sig_tree->Branch("TDCstdV",&_TDCstdV,"TDCstdV/F");
+    sig_tree->Branch("TDCstdY",&_TDCstdY,"TDCstdY/F");
+    sig_tree->Branch("TDCiqrU",&_TDCiqrU,"TDCiqrU/F");
+    sig_tree->Branch("TDCiqrV",&_TDCiqrV,"TDCiqrV/F");
+    sig_tree->Branch("TDCiqrY",&_TDCiqrY,"TDCiqrY/F");
+    sig_tree->Branch("ADCampU",&_ADCampU,"ADCampU/F");
+    sig_tree->Branch("ADCampV",&_ADCampV,"ADCampV/F");
+    sig_tree->Branch("ADCampY",&_ADCampY,"ADCampY/F");
+    sig_tree->Branch("WFintU",&_WFintU,"WFintU/F");
+    sig_tree->Branch("WFintV",&_WFintV,"WFintV/F");
+    sig_tree->Branch("WFintY",&_WFintY,"WFintY/F");
+    sig_tree->Branch("MeanampU",&_MeanampU,"MeanampU/F");
+    sig_tree->Branch("MeanampV",&_MeanampV,"MeanampV/F");
+    sig_tree->Branch("MeanampY",&_MeanampY,"MeanampY/F");
+    sig_tree->Branch("MeanintU",&_MeanintU,"MeanintU/F");
+    sig_tree->Branch("MeanintV",&_MeanintV,"MeanintV/F");
+    sig_tree->Branch("MeanintY",&_MeanintY,"MeanintY/F");
+    sig_tree->Branch("LowDenU",&_LowDenU,"LowDenU/i");
+    sig_tree->Branch("LowDenV",&_LowDenV,"LowDenV/i");
+    sig_tree->Branch("LowDenY",&_LowDenY,"LowDenY/i");
+    sig_tree->Branch("HiDenU",&_HiDenU,"HiDenU/i");
+    sig_tree->Branch("HiDenV",&_HiDenV,"HiDenV/i");
+    sig_tree->Branch("HiDenY",&_HiDenY,"HiDenY/i");
+    sig_tree->Branch("MeanRMSU",&_MeanRMSU,"MeanRMSU/F");
+    sig_tree->Branch("MeanRMSV",&_MeanRMSV,"MeanRMSV/F");
+    sig_tree->Branch("MeanRMSY",&_MeanRMSY,"MeanRMSY/F");
+    sig_tree->Branch("MeanMultU",&_MeanMultU,"MeanMultU/F");
+    sig_tree->Branch("MeanMultV",&_MeanMultV,"MeanMultV/F");
+    sig_tree->Branch("MeanMultY",&_MeanMultY,"MeanMultY/F");
+    sig_tree->Branch("WirestdU",&_WirestdU,"WirestdU/F");
+    sig_tree->Branch("WirestdV",&_WirestdV,"WirestdV/F");
+    sig_tree->Branch("WirestdY",&_WirestdY,"WirestdY/F");
+    sig_tree->Branch("WireiqrU",&_WireiqrU,"WireiqrU/F");
+    sig_tree->Branch("WireiqrV",&_WireiqrV,"WireiqrV/F");
+    sig_tree->Branch("WireiqrY",&_WireiqrY,"WireiqrY/F");
+    sig_tree->Branch("NumMultU",&_NumMultU,"NumMultU/i");
+    sig_tree->Branch("NumMultV",&_NumMultV,"NumMultV/i");
+    sig_tree->Branch("NumMultY",&_NumMultY,"NumMultY/i");
     sig_tree->SetDirectory(0);
 
     // Initialise background TTree for Y variables and 960x346 boxes
@@ -154,38 +182,38 @@ namespace larlite {
     }
 
     // Initialise hit counters for event
-    _hitNoY = 0;
+    _hitNoU = 0; _hitNoV = 0; _hitNoY = 0;
     // Initialize integration counters for event
-    _WFintY = 0;
+    _WFintU = 0; _WFintV = 0; _WFintY = 0;
     // Clear TDC vectors
-    YTDCvec.clear();
+    UTDCvec.clear(); VTDCvec.clear(); YTDCvec.clear();
     // Clear ADC vectors
-    YADCvec.clear();
+    UADCvec.clear(); VADCvec.clear(); YADCvec.clear();
     // Clear Channel number vectors
-    YChvec.clear();
+    UChvec.clear(); VChvec.clear(); YChvec.clear();
     // Initialize TDC standard deviation counters
-    _TDCstdY = 0;
+    _TDCstdU = 0; _TDCstdV = 0; _TDCstdY = 0;
     // Initialize TDC interquartile range counters
-    _TDCiqrY = 0;
+    _TDCiqrU = 0; _TDCiqrV = 0; _TDCiqrY = 0;
     // Initialize max (or total?) ADC amplitude counters
-    _ADCampY = 0;
+    _ADCampU = 0; _ADCampV = 0; _ADCampY = 0;
     // Initialize mean adc amplitude counters
-    _MeanampY = 0;
+    _MeanampU = 0; _MeanampV = 0; _MeanampY = 0;
     // Initailize mean integrated waveform counters
-    _MeanintY = 0;
+    _MeanintU = 0; _MeanintV = 0; _MeanintY = 0;
     // Initialize hit density between 5-35 ADCs
-    _LowDenY = 0;
+    _LowDenU = 0; _LowDenV = 0; _LowDenY = 0;
     // Initialize hit density > 35
-    _HiDenY = 0;
+    _HiDenU = 0; _HiDenV = 0; _HiDenY = 0;
     // Initialize mean RMS counters
-    _MeanRMSY = 0;
+    _MeanRMSU = 0; _MeanRMSV = 0; _MeanRMSY = 0;
     // Initialize mean multiplicity counters
-    _MeanMultY = 0;
+    _MeanMultU = 0; _MeanMultV = 0; _MeanMultY = 0;
     // Initialize Wire standard deviation counter
-    _WirestdY = 0;
+    _WirestdU = 0; _WirestdV = 0; _WirestdY = 0;
     // Initialize Wire interquartile range counter
-    _WireiqrY = 0;
-    _NumMultY = 0;
+    _WireiqrU = 0; _WireiqrV = 0; _WireiqrY = 0;
+    _NumMultU = 0; _NumMultV = 0; _NumMultY = 0;
 
     // Loop over hits in each event
     for (size_t i=0; i < hitdata->size(); ++i){
@@ -198,6 +226,32 @@ namespace larlite {
       float rms = hit.RMS();
       float mult = hit.Multiplicity();
       if(amp>10&&tdc>3600&&tdc<9600){
+      // Do same for U plane CHECK THIS
+      if(chnum<2400){
+        _hitNoU += 1;
+        _MeanampU += amp;
+        _WFintU += wint;
+        _MeanRMSU += rms;
+        _MeanMultU += mult;
+        UTDCvec.push_back(tdc);
+        UADCvec.push_back(amp);
+        UChvec.push_back(chnum);
+        if(amp<=26)_LowDenU += 1;
+        if(amp>26)_HiDenU += 1;
+      }
+      // Do same for V plane CHECK THIS
+      if(chnum>=2400&&chnum<4800){
+        _hitNoV += 1;
+        _MeanampV += amp;
+        _WFintV += wint;
+        _MeanRMSV += rms;
+        _MeanMultV += mult;
+        VTDCvec.push_back(tdc);
+        VADCvec.push_back(amp);
+        VChvec.push_back(chnum);
+        if(amp<=26)_LowDenV += 1;
+        if(amp>26)_HiDenV += 1;
+      }
       // Do same for Y plane CHECK THIS
       if(chnum>=4800&&chnum<8256){
         _hitNoY += 1;
@@ -214,12 +268,39 @@ namespace larlite {
       }
     }
 
+    _ADCampU = gMaxVal(UADCvec);
+    _MeanampU = _MeanampU/_hitNoU;
+    _MeanintU = _WFintU/_hitNoU;
+    _MeanRMSU = _MeanRMSU/_hitNoU;
+    _MeanMultU = _MeanMultU/_hitNoU;
+
+    _ADCampV = gMaxVal(VADCvec);
+    _MeanampV = _MeanampV/_hitNoV;
+    _MeanintV = _WFintV/_hitNoV;
+    _MeanRMSV = _MeanRMSV/_hitNoV;
+    _MeanMultV = _MeanMultV/_hitNoV;
+
     _ADCampY = gMaxVal(YADCvec);
     _MeanampY = _MeanampY/_hitNoY;
     _MeanintY = _WFintY/_hitNoY;
     _MeanRMSY = _MeanRMSY/_hitNoY;
     _MeanMultY = _MeanMultY/_hitNoY;
-    // Y plane
+
+    // U plane
+    if(_hitNoU!=0){
+      _TDCstdU = gTDCstd(UTDCvec);
+      _TDCiqrU = gTDCiqr(UTDCvec,_hitNoU);
+      _WirestdU = gTDCstd(UChvec);
+      _WireiqrU = gTDCiqr(UChvec,_hitNoU);
+    }
+
+    if(_hitNoV!=0){
+      _TDCstdV = gTDCstd(VTDCvec);
+      _TDCiqrV = gTDCiqr(VTDCvec,_hitNoV);
+      _WirestdV = gTDCstd(VChvec);
+      _WireiqrV = gTDCiqr(VChvec,_hitNoV);
+    }
+
     if(_hitNoY!=0){
       _TDCstdY = gTDCstd(YTDCvec);
       _TDCiqrY = gTDCiqr(YTDCvec,_hitNoY);
@@ -228,6 +309,26 @@ namespace larlite {
     }
 
     int current_num_hits, next_num_hits;
+
+    for(int k(0); k<2400; k++){
+      current_num_hits = 0;
+      next_num_hits = 0;
+      for(int l(0); l<UChvec.size(); l++){
+        if(UChvec[l]==k) current_num_hits++;
+        if(UChvec[l]==k+1) next_num_hits++;
+      }
+      if(std::abs(current_num_hits-next_num_hits)>3) _NumMultU++;
+    }
+
+    for(int k(2400); k<4800; k++){
+      current_num_hits = 0;
+      next_num_hits = 0;
+      for(int l(0); l<VChvec.size(); l++){
+        if(VChvec[l]==k) current_num_hits++;
+        if(VChvec[l]==k+1) next_num_hits++;
+      }
+      if(std::abs(current_num_hits-next_num_hits)>3) _NumMultV++;
+    }
 
     for(int k(4800); k<8256; k++){
       current_num_hits = 0;
@@ -240,7 +341,9 @@ namespace larlite {
     }
 
     // Fill TTree
-    if(_hitNoY==0||_ADCampY>2000) return false; 
+    if(_hitNoU==0||_ADCampU>2000) return false; 
+    if(_hitNoV==0||_ADCampV>2000) return false;
+    if(_hitNoY==0||_ADCampY>2000) return false;
 
     if(_detShowerNo==0) bkg_tree->Fill();
     else sig_tree->Fill();

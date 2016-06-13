@@ -70,39 +70,39 @@ namespace larlite {
 
     int _Type;
 
-    int _hitNoY;
+    int _hitNoU, _hitNoV, _hitNoY;
 
-    float _TDCstdY;
+    float _TDCstdU, _TDCstdV, _TDCstdY;
 
-    float _TDCiqrY;
+    float _TDCiqrU, _TDCiqrV, _TDCiqrY;
 
-    float _ADCampY;
+    float _ADCampU, _ADCampV, _ADCampY;
 
-    float _MeanampY;
+    float _MeanampU, _MeanampV, _MeanampY;
 
-    float _WFintY;
+    float _WFintU, _WFintV, _WFintY;
 
-    float _MeanintY;
+    float _MeanintU, _MeanintV, _MeanintY;
 
-    int _LowDenY;
+    int _LowDenU, _LowDenV, _LowDenY;
 
-    int _HiDenY;
+    int _HiDenU, _HiDenV, _HiDenY;
 
-    float _MeanRMSY;
+    float _MeanRMSU, _MeanRMSV, _MeanRMSY;
 
-    float _MeanMultY;
+    float _MeanMultU, _MeanMultV, _MeanMultY;
 
-    float _WirestdY;
+    float _WirestdU, _WirestdV, _WirestdY;
 
-    float _WireiqrY;
+    float _WireiqrU, _WireiqrV, _WireiqrY;
 
-    int _NumMultY;
+    int _NumMultU, _NumMultV, _NumMultY;
 
-    std::vector<float> TDCvec, YTDCvec;
+    std::vector<float> TDCvec, UTDCvec, VTDCvec, YTDCvec;
    
-    std::vector<float> ADCvec, YADCvec;
+    std::vector<float> ADCvec, UADCvec, VADCvec, YADCvec;
 
-    std::vector<float> Chvec, YChvec;
+    std::vector<float> Chvec, UChvec, VChvec, YChvec;
 
     TTree* sig_tree; TTree* bkg_tree; 
     
