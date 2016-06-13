@@ -68,6 +68,8 @@ namespace larlite {
 
     int _showerNo, _detShowerNo;
 
+    int _Type;
+
     int _hitNoY;
 
     float _TDCstdY;

@@ -52,6 +52,8 @@ namespace larlite {
     // Initialise TTree for Y variables and 960x346 boxes
     sig_tree = new TTree("sig_tree","");
     sig_tree->Branch("evt",&_evtN,"evt/i");
+    sig_tree->Branch("detShowerNo",&_detShowerNo,"detShowerNo/i");
+    sig_tree->Branch("Type",&_Type,"Type/i");
     sig_tree->Branch("hitNo",&_hitNoY,"hitNo/i");
     sig_tree->Branch("TDCstd",&_TDCstdY,"TDCstd/F");
     sig_tree->Branch("TDCiqr",&_TDCiqrY,"TDCiqr/F");
@@ -77,6 +79,35 @@ namespace larlite {
   }
   
   bool GenerateSigBkg::analyze(storage_manager* storage) {
+
+
+    bool truthflag = true;
+
+    auto ev_mct = storage->get_data<event_mctruth>("generator");
+
+    // Display error if rawdigit data not present
+    if ( (!ev_mct) || (!ev_mct->size())){
+    	print (msg::kERROR,__FUNCTION__,"MCTruth data product not found!");
+    	truthflag = false;
+    }
+    if(truthflag){
+        auto const& mct = (*ev_mct).at(0);
+        // Get neutrino inf
+        auto const& neut = (mct.GetNeutrino());
+        // Get charged current or neutral current
+        int ccnc = neut.CCNC();
+	// Get interaction type
+	int intMode = neut.Mode();
+	if(intMode==0&&ccnc==0){_Type = 0;}//CCQE
+	else if(intMode==0&&ccnc==1){_Type = 1;}//NCQE
+	else if(intMode==1&&ccnc==0){_Type = 2;}//CCRE
+	else if(intMode==1&&ccnc==1){_Type = 3;}//NCRE
+	else if(intMode==2&&ccnc==0){_Type = 4;}//CCDIS
+	else if(intMode==2&&ccnc==1){_Type = 5;}//NCDIS
+	else if(intMode==3&&ccnc==0){_Type = 6;}//CCCO
+	else if(intMode==3&&ccnc==1){_Type = 7;}//NCCO
+        else{_Type = 8;}
+    } else _Type = 8;
   
     bool showerFlag = 1;
 
@@ -102,8 +133,12 @@ namespace larlite {
         float startX = shower.Start().X()/100;
         float startY = shower.Start().Y()/100;
         float startZ = shower.Start().Z()/100;
+        float endX = shower.End().X()/100;
+        float endY = shower.End().Y()/100;
+        float endZ = shower.End().Z()/100;
         // Count number of showers per event
-        if((startX>0&&startX<2.5604)&&(startY>-1.2&&startY<1.2)&&(startZ>0&&startZ<10.5)&&Energy>100){
+        if(((startX>0&&startX<2.5604)&&(startY>-1.2&&startY<1.2)&&(startZ>0&&startZ<10.5)&&Energy>100&&Energy<500)
+           ||((endX>0&&endX<2.5604)&&(endY>-1.2&&endY<1.2)&&(endZ>0&&endZ<10.5)&&Energy>100&&Energy<500)){
           _detShowerNo += 1;
         }
         _showerNo += 1;
